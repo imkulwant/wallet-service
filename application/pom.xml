@@ -18,6 +18,11 @@
             <artifactId>wallet</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.kulsin</groupId>
+            <artifactId>account</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

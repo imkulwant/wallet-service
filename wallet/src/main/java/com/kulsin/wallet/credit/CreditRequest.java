@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class CreditRequest {
 
-    private final Long playerId;
-    private final Long amount;
-    private final String transactionId;
+    private final long playerId;
+    private final double amount;
+    private final long transactionId;
 
 }

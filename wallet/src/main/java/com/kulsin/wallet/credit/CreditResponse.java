@@ -6,8 +6,8 @@ import lombok.Data;
 public class CreditResponse {
 
     private final Long playerId;
-    private final Long balance;
-    private final String transactionId;
+    private final double balance;
+    private final long transactionId;
     private final String transactionStatus;
 
 }

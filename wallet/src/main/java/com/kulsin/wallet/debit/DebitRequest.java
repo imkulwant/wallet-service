@@ -6,7 +6,7 @@ import lombok.Data;
 public class DebitRequest {
 
     private final Long playerId;
-    private final Long amount;
-    private final String transactionId;
+    private final double amount;
+    private final Long transactionId;
 
 }

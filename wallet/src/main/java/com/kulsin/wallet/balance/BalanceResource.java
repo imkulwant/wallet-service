@@ -13,11 +13,9 @@ public class BalanceResource {
 
     @GetMapping(value = "/balance.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public BalanceResponse getBalance(
-            @RequestParam Long playerId,
-            @RequestParam String token
+            @RequestParam Long playerId
     ) {
 
-        // validate token
         return balanceService.playerBalance(playerId);
 
     }
