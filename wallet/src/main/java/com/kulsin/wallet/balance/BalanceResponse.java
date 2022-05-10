@@ -6,6 +6,6 @@ import lombok.Data;
 public class BalanceResponse {
 
     private final Long playerId;
-    private final Long balance;
+    private final double balance;
 
 }

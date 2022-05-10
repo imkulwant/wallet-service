@@ -1,9 +1,11 @@
-package com.kulsin.wallet;
+package com.kulsin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan({"com.kulsin.account", "com.kulsin.wallet"})
 public class WalletServiceApplication {
 
 	public static void main(String[] args) {
