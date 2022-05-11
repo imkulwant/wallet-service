@@ -1,10 +1,13 @@
 package com.kulsin.wallet.balance;
 
-import com.kulsin.wallet.common.WalletBaseResponse;
+import com.kulsin.wallet.model.WalletBaseRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 public class BalanceResource {
@@ -15,12 +18,12 @@ public class BalanceResource {
         this.balanceService = balanceService;
     }
 
-    @GetMapping(value = "/balance.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public WalletBaseResponse getBalance(
-            @RequestParam Long playerId
+    @PostMapping(value = "/balance.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public WalletResponse getBalance(
+            @RequestBody @Valid WalletBaseRequest balanceRequest
     ) {
 
-        return balanceService.playerBalance(playerId);
+        return balanceService.playerBalance(balanceRequest.getPlayerId());
 
     }
 

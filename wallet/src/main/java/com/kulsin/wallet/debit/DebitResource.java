@@ -1,7 +1,7 @@
 package com.kulsin.wallet.debit;
 
-import com.kulsin.wallet.common.WalletBaseRequest;
-import com.kulsin.wallet.common.WalletBaseResponse;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +17,8 @@ public class DebitResource {
     }
 
     @PostMapping(value = "/debit.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public WalletBaseResponse debit(
-            @RequestBody WalletBaseRequest debitRequest
+    public WalletResponse debit(
+            @RequestBody WalletRequest debitRequest
     ) {
 
         return debitService.debitPlayer(debitRequest);

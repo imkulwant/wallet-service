@@ -20,7 +20,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account updateBalance(long playerId, double balance, String currency) {
+    public Account updatePlayerBalance(long playerId, double balance, String currency) {
             return accountRepository.save(new Account(playerId, balance, currency));
     }
 
