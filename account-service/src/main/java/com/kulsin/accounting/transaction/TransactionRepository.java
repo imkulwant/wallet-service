@@ -1,4 +1,4 @@
-package com.kulsin.account.transaction;
+package com.kulsin.accounting.transaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

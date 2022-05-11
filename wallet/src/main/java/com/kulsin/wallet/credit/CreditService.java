@@ -1,48 +1,61 @@
 package com.kulsin.wallet.credit;
 
-import com.kulsin.account.playeraccount.Account;
-import com.kulsin.account.transaction.Transaction;
-import com.kulsin.account.playeraccount.AccountService;
-import com.kulsin.account.transaction.TransactionService;
-import com.kulsin.wallet.ValidationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kulsin.accounting.account.AccountService;
+import com.kulsin.accounting.transaction.Transaction;
+import com.kulsin.accounting.transaction.TransactionService;
+import com.kulsin.wallet.common.ValidationService;
+import com.kulsin.wallet.common.WalletBaseRequest;
+import com.kulsin.wallet.common.WalletBaseResponse;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class CreditService {
 
-    @Autowired
-    AccountService accountService;
-    @Autowired
-    TransactionService transactionService;
+    private final AccountService accountService;
+    private final TransactionService transactionService;
+    private final ValidationService validationService;
 
-    @Autowired
-    ValidationService validationService;
+    public CreditService(AccountService accountService,
+                         TransactionService transactionService,
+                         ValidationService validationService) {
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+        this.validationService = validationService;
+    }
 
-    public CreditResponse creditPlayer(CreditRequest creditRequest) {
+    public WalletBaseResponse creditPlayer(WalletBaseRequest creditRequest) {
+
+        long playerId = creditRequest.getPlayerId();
+        double amount = creditRequest.getAmount();
+        String currency = creditRequest.getCurrency();
+        long transactionId = creditRequest.getTransactionId();
 
         validationService.checkTransactionUniqueness(creditRequest.getTransactionId());
 
         Transaction transaction = new Transaction(
-                creditRequest.getTransactionId(),
-                creditRequest.getPlayerId(),
-                creditRequest.getAmount(),
-                "CREDIT"
+                transactionId,
+                playerId,
+                amount,
+                "CREDIT",
+                Instant.now().toString()
         );
 
-        if (accountService.accountExist(creditRequest.getPlayerId())) {
-            double updateBalance = accountService.getBalance(creditRequest.getPlayerId()) + creditRequest.getAmount();
-            accountService.updateBalance(creditRequest.getPlayerId(), updateBalance);
+        if (accountService.accountExist(playerId)) {
+            double updateBalance = accountService.getBalance(playerId) + amount;
+            accountService.updateBalance(playerId, updateBalance, currency);
             transactionService.saveTransaction(transaction);
         } else {
-            accountService.createAccount(new Account(creditRequest.getPlayerId(), creditRequest.getAmount()));
+            accountService.updateBalance(playerId, amount, currency);
             transactionService.saveTransaction(transaction);
         }
 
-        return new CreditResponse(creditRequest.getPlayerId(),
-                accountService.getBalance(creditRequest.getPlayerId()),
+        return new WalletBaseResponse(playerId,
+                accountService.getBalance(playerId),
                 creditRequest.getTransactionId(),
-                "200OK");
+                "200OK"
+        );
     }
 
 }

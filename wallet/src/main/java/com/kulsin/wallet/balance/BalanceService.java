@@ -1,19 +1,26 @@
 package com.kulsin.wallet.balance;
 
-import com.kulsin.account.playeraccount.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kulsin.accounting.account.AccountService;
+import com.kulsin.wallet.common.WalletBaseResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BalanceService {
 
-    @Autowired
-    AccountService accountService;
+    private final AccountService accountService;
 
-    public BalanceResponse playerBalance(Long playerId) {
+    public BalanceService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    public WalletBaseResponse playerBalance(Long playerId) {
 
         double balance = accountService.getBalance(playerId);
-        return new BalanceResponse(playerId, balance);
+        return new WalletBaseResponse(playerId,
+                balance,
+                345678087,
+                "200OK"
+                );
 
     }
 

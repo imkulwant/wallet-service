@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>application</artifactId>
     <packaging>jar</packaging>
+    <name>Application</name>
 
     <parent>
         <artifactId>wallet-service</artifactId>
@@ -20,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>com.kulsin</groupId>
-            <artifactId>account</artifactId>
+            <artifactId>account-service</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

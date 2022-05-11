@@ -1,21 +1,24 @@
 package com.kulsin.wallet.credit;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kulsin.wallet.common.WalletBaseRequest;
+import com.kulsin.wallet.common.WalletBaseResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CreditResource {
 
-    @Autowired
-    CreditService creditService;
+    private final CreditService creditService;
+
+    public CreditResource(CreditService creditService) {
+        this.creditService = creditService;
+    }
 
     @PostMapping(value = "/credit.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CreditResponse credit(
-            @RequestBody CreditRequest creditRequest
+    public WalletBaseResponse credit(
+            @RequestBody WalletBaseRequest creditRequest
     ) {
 
-        // validate token
         return creditService.creditPlayer(creditRequest);
 
     }
