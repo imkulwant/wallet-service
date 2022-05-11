@@ -1,7 +1,7 @@
 package com.kulsin.wallet.credit;
 
-import com.kulsin.wallet.common.WalletBaseRequest;
-import com.kulsin.wallet.common.WalletBaseResponse;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +15,8 @@ public class CreditResource {
     }
 
     @PostMapping(value = "/credit.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public WalletBaseResponse credit(
-            @RequestBody WalletBaseRequest creditRequest
+    public WalletResponse credit(
+            @RequestBody WalletRequest creditRequest
     ) {
 
         return creditService.creditPlayer(creditRequest);

@@ -3,9 +3,9 @@ package com.kulsin.wallet.debit;
 import com.kulsin.accounting.account.AccountService;
 import com.kulsin.accounting.transaction.Transaction;
 import com.kulsin.accounting.transaction.TransactionService;
-import com.kulsin.wallet.common.ValidationService;
-import com.kulsin.wallet.common.WalletBaseRequest;
-import com.kulsin.wallet.common.WalletBaseResponse;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.errorhandling.WalletException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,46 +15,48 @@ public class DebitService {
 
     private final AccountService accountService;
     private final TransactionService transactionService;
-    private final ValidationService validationService;
 
     public DebitService(AccountService accountService,
-                        TransactionService transactionService,
-                        ValidationService validationService) {
+                        TransactionService transactionService) {
         this.accountService = accountService;
         this.transactionService = transactionService;
-        this.validationService = validationService;
     }
 
-    public WalletBaseResponse debitPlayer(WalletBaseRequest debitRequest) {
+    public WalletResponse debitPlayer(WalletRequest debitRequest) {
 
-        validationService.checkTransactionUniqueness(debitRequest.getTransactionId());
+        Long playerId = debitRequest.getPlayerId();
+        double debitAmount = debitRequest.getAmount();
+        String currency = debitRequest.getCurrency();
+        long transactionId = debitRequest.getTransactionId();
 
-        Transaction transaction = new Transaction(
-                debitRequest.getTransactionId(),
-                debitRequest.getPlayerId(),
-                debitRequest.getAmount(),
-                "DEBIT",
-                Instant.now().toString()
-        );
+        validateDebitRequest(playerId, debitAmount, transactionId);
 
-        if (accountService.accountExist(debitRequest.getPlayerId())) {
-            if( accountService.getBalance(debitRequest.getPlayerId()) >= debitRequest.getAmount()) {
-                double updateBalance = accountService.getBalance(debitRequest.getPlayerId()) - debitRequest.getAmount();
-                accountService.updateBalance(debitRequest.getPlayerId(), updateBalance, debitRequest.getCurrency());
-                transactionService.saveTransaction(transaction);
-            } else {
-                throw new RuntimeException("Insufficient balance");
-            }
+        double updatedBalance = accountService.getBalance(playerId) - debitAmount;
 
-        } else {
-            throw new RuntimeException("Player account doesn't exists");
+        accountService.updatePlayerBalance(playerId, updatedBalance, currency);
+
+        transactionService.saveTransaction(new Transaction(transactionId, playerId, debitAmount,
+                "DEBIT", Instant.now().toString()));
+
+        return new WalletResponse(playerId, updatedBalance, transactionId);
+
+    }
+
+    private void validateDebitRequest(Long playerId, double debitAmount, long transactionId) {
+
+        if (!accountService.accountExist(playerId)) {
+            throw new WalletException("Invalid player id! player account doesn't exists");
         }
 
-        return new WalletBaseResponse(debitRequest.getPlayerId(),
-                accountService.getBalance(debitRequest.getPlayerId()),
-                debitRequest.getTransactionId(),
-                "200OK"
-        );
+        if(transactionService.transactionExists(transactionId)) {
+            throw new WalletException(String.format("Transaction id %s is not unique!", transactionId));
+        }
+
+        double balance = accountService.getBalance(playerId);
+        if (!((balance - debitAmount) >= 0)) {
+            throw new WalletException("Transaction declined! player has in-sufficient funds");
+        }
+
     }
 
 }

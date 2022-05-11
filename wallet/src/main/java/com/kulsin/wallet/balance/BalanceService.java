@@ -1,7 +1,8 @@
 package com.kulsin.wallet.balance;
 
 import com.kulsin.accounting.account.AccountService;
-import com.kulsin.wallet.common.WalletBaseResponse;
+import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.errorhandling.WalletException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,14 +14,14 @@ public class BalanceService {
         this.accountService = accountService;
     }
 
-    public WalletBaseResponse playerBalance(Long playerId) {
+    public WalletResponse playerBalance(Long playerId) {
+
+        if (!accountService.accountExist(playerId)) {
+            throw new WalletException("Invalid player id! player account doesn't exists");
+        }
 
         double balance = accountService.getBalance(playerId);
-        return new WalletBaseResponse(playerId,
-                balance,
-                345678087,
-                "200OK"
-                );
+        return new WalletResponse(playerId, balance);
 
     }
 
