@@ -4,6 +4,7 @@ import com.kulsin.accounting.account.AccountService;
 import com.kulsin.accounting.transaction.Transaction;
 import com.kulsin.accounting.transaction.TransactionService;
 import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.TransactionHistoryResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,13 @@ public class HistoryResource {
     }
 
     @GetMapping(value = "/history.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Transaction> playerHistory(@RequestParam long playerId) {
+    public TransactionHistoryResponse playerHistory(@RequestParam long playerId) {
 
         if (!accountService.accountExist(playerId)) {
             throw new WalletException("Invalid player id! player account doesn't exists");
         }
 
-        return transactionService.getTransactions(playerId);
+        return new TransactionHistoryResponse(transactionService.getTransactions(playerId));
 
     }
 
