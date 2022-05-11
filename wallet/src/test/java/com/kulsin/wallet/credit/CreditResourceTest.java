@@ -1,16 +1,137 @@
 package com.kulsin.wallet.credit;
 
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.kulsin.wallet.balance.ResourceTestCommon.makeMockMvc;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class CreditResourceTest {
 
+    @Mock
+    private CreditService creditService;
+    @InjectMocks
+    private CreditResource creditResource;
+
+    private MockMvc mockMvc;
+
     @BeforeEach
     void setUp() {
+        mockMvc = makeMockMvc(creditResource);
     }
+
+    @Test
+    void creditTest_Success() throws Exception {
+        String requestPayload = """
+                        {
+                            "playerId": 123,
+                            "amount": 5,
+                            "currency": "EUR",
+                            "transactionId": 999888
+                        }
+                """;
+
+        String expectedResponse = """
+                        {
+                            "playerId": 123,
+                            "balance": 5.0,
+                            "transactionId": 999888
+                        }
+                """;
+
+        WalletRequest creditRequest = new WalletRequest(13L, 5, "EUR", 999888L);
+        Mockito.when(creditService.creditPlayer(creditRequest))
+                .thenReturn(new WalletResponse(123L, 5.0, 999888));
+
+        var request = MockMvcRequestBuilders.post("/credit.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestPayload);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+
+        verify(creditService, times(1)).creditPlayer(creditRequest);
+
+    }
+
+
+    @Test
+    void creditTest_InvalidRequest_MissingTransactionId() throws Exception {
+        String requestPayload = """
+                        {
+                            "playerId": 123,
+                            "amount": 5,
+                            "currency": "EUR"
+                        }
+                """;
+
+        String expectedResponse = """
+                    {
+                        "errorMessage": "Mandatory field transactionId is missing",
+                        "errorStatus": 200
+                    }
+                """;
+
+        var request = MockMvcRequestBuilders.post("/credit.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestPayload);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+
+        verifyNoInteractions(creditService);
+
+    }
+
+    @Test
+    void creditTest_DuplicateTransaction() throws Exception {
+        String requestPayload = """
+                        {
+                            "playerId": 123,
+                            "amount": 5,
+                            "currency": "EUR",
+                            "transactionId": 999888
+                        }
+                """;
+
+        String expectedResponse = """
+                    {
+                        "errorMessage": "Transaction id 999888 is not unique!",
+                        "errorStatus": 200
+                    }
+                """;
+
+        WalletRequest creditRequest = new WalletRequest(13L, 5, "EUR", 999888L);
+        Mockito.when(creditService.creditPlayer(creditRequest))
+                .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
+
+        var request = MockMvcRequestBuilders.post("/credit.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestPayload);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+
+        verify(creditService, times(1)).creditPlayer(creditRequest);
+
+    }
+
 
 }

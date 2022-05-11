@@ -65,7 +65,7 @@ class BalanceResourceTest {
     }
 
     @Test
-    void getBalanceTest_invalidRequest() throws Exception {
+    void getBalanceTest_InvalidRequest() throws Exception {
         String getBalanceRequestPayload = """
                     {
                         "customerId": 123
@@ -92,7 +92,7 @@ class BalanceResourceTest {
     }
 
     @Test
-    void getBalanceTest_invalidPlayerId() throws Exception {
+    void getBalanceTest_InvalidPlayerId() throws Exception {
         String getBalanceRequestPayload = """
                     {
                         "playerId": 123
