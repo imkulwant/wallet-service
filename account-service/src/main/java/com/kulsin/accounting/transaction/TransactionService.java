@@ -1,8 +1,8 @@
-package com.kulsin.account.transaction;
+package com.kulsin.accounting.transaction;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,9 +11,13 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionService {
 
-    @Autowired
-    TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
 
+    public TransactionService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    @Transactional
     public Transaction saveTransaction(Transaction transaction) {
         try {
 

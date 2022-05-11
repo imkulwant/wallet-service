@@ -1,14 +1,16 @@
-package com.kulsin.wallet;
+package com.kulsin.wallet.common;
 
-import com.kulsin.account.transaction.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kulsin.accounting.transaction.TransactionService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ValidationService {
 
-    @Autowired
-    TransactionService transactionService;
+    private final TransactionService transactionService;
+
+    public ValidationService(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     public void checkTransactionUniqueness(long transactionId) {
         if(transactionService.transactionExists(transactionId)) {

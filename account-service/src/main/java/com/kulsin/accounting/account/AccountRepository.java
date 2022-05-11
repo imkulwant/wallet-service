@@ -1,4 +1,4 @@
-package com.kulsin.account.playeraccount;
+package com.kulsin.accounting.account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

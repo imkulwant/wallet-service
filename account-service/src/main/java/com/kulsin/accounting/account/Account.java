@@ -1,4 +1,4 @@
-package com.kulsin.account.playeraccount;
+package com.kulsin.accounting.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Data
-@Entity
-@Table(name = "accounts")
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "accounts")
 public class Account {
 
     @Id
@@ -22,5 +22,8 @@ public class Account {
 
     @Column(name = "balance")
     private double balance;
+
+    @Column(name = "currency")
+    private String currency;
 
 }

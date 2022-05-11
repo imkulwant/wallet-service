@@ -1,4 +1,4 @@
-package com.kulsin.account.transaction;
+package com.kulsin.accounting.transaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Data
-@Entity
-@Table(name = "transactions")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -28,5 +28,9 @@ public class Transaction {
 
     @Column(name = "transactionType")
     private String transactionType;
+
+    @Column(name = "timestamp")
+    private String timestamp;
+
 
 }
