@@ -1,5 +1,6 @@
 package com.kulsin.wallet.balance;
 
+import com.kulsin.accounting.account.AccountServiceException;
 import com.kulsin.wallet.errorhandling.WalletException;
 import com.kulsin.wallet.model.WalletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +76,7 @@ class BalanceResourceTest {
         String expectedBalanceResponse = """
                     {
                         "errorMessage": "Mandatory field playerId is missing",
-                        "errorStatus": 200
+                        "errorStatus": 400
                     }
                 """;
 
@@ -102,12 +103,42 @@ class BalanceResourceTest {
         String expectedBalanceResponse = """
                     {
                         "errorMessage": "Invalid player id! player account doesn't exists",
-                        "errorStatus": 200
+                        "errorStatus": 400
                     }
                 """;
 
         Mockito.when(balanceService.playerBalance(123L))
                 .thenThrow(new WalletException("Invalid player id! player account doesn't exists"));
+
+        var request = MockMvcRequestBuilders.post("/v1/wallet/balance.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getBalanceRequestPayload);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedBalanceResponse));
+
+        verify(balanceService, times(1)).playerBalance(123L);
+
+    }
+
+    @Test
+    void getBalanceTest_UnExpected_AccountServiceException() throws Exception {
+        String getBalanceRequestPayload = """
+                    {
+                        "playerId": 123
+                    }
+                """;
+
+        String expectedBalanceResponse = """
+                    {
+                        "errorMessage": "Unexpected error occurred while fetching player balance",
+                        "errorStatus": 500
+                    }
+                """;
+
+        Mockito.when(balanceService.playerBalance(123L))
+                .thenThrow(new AccountServiceException("Unexpected error occurred while fetching player balance"));
 
         var request = MockMvcRequestBuilders.post("/v1/wallet/balance.json")
                 .contentType(MediaType.APPLICATION_JSON)

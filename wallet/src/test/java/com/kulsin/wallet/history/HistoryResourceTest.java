@@ -86,7 +86,7 @@ class HistoryResourceTest {
         String expectedResponse = """
                     {
                         "errorMessage": "Invalid player id! player account doesn't exists",
-                        "errorStatus": 200
+                        "errorStatus": 400
                     }
                 """;
 

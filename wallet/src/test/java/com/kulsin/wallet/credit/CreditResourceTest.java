@@ -1,5 +1,6 @@
 package com.kulsin.wallet.credit;
 
+import com.kulsin.accounting.transaction.TransactionServiceException;
 import com.kulsin.wallet.errorhandling.WalletException;
 import com.kulsin.wallet.model.WalletRequest;
 import com.kulsin.wallet.model.WalletResponse;
@@ -83,7 +84,7 @@ class CreditResourceTest {
         String expectedResponse = """
                     {
                         "errorMessage": "Mandatory field transactionId is missing",
-                        "errorStatus": 200
+                        "errorStatus": 400
                     }
                 """;
 
@@ -113,13 +114,47 @@ class CreditResourceTest {
         String expectedResponse = """
                     {
                         "errorMessage": "Transaction id 999888 is not unique!",
-                        "errorStatus": 200
+                        "errorStatus": 400
                     }
                 """;
 
         WalletRequest creditRequest = new WalletRequest(13L, 5, "EUR", 999888L);
         Mockito.when(creditService.creditPlayer(creditRequest))
                 .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
+
+        var request = MockMvcRequestBuilders.post("/v1/wallet/credit.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestPayload);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+
+        verify(creditService, times(1)).creditPlayer(creditRequest);
+
+    }
+
+    @Test
+    void creditTest_UnExpected_TransactionServiceException() throws Exception {
+        String requestPayload = """
+                        {
+                            "playerId": 123,
+                            "amount": 5,
+                            "currency": "EUR",
+                            "transactionId": 999888
+                        }
+                """;
+
+        String expectedResponse = """
+                    {
+                        "errorMessage": "Unexpected transaction service exception",
+                        "errorStatus": 500
+                    }
+                """;
+
+        WalletRequest creditRequest = new WalletRequest(13L, 5, "EUR", 999888L);
+        Mockito.when(creditService.creditPlayer(creditRequest))
+                .thenThrow(new TransactionServiceException("Unexpected transaction service exception"));
 
         var request = MockMvcRequestBuilders.post("/v1/wallet/credit.json")
                 .contentType(MediaType.APPLICATION_JSON)
