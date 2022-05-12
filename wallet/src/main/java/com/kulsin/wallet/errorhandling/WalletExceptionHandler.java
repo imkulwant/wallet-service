@@ -16,22 +16,19 @@ public class WalletExceptionHandler extends ExceptionHandlerExceptionResolver {
 
     @Override
     protected ModelAndView doResolveHandlerMethodException(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod, Exception exception) {
-        String message = "";
 
         if(exception instanceof MethodArgumentNotValidException) {
-            message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
+            String message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
             return errorModelAndView(400, message);
 
         } else if ( exception instanceof WalletException){
-            message = exception.getMessage();
-            return errorModelAndView(400, message);
+            return errorModelAndView(400, exception.getMessage());
 
         }  else if ( exception instanceof AccountServiceException || exception instanceof TransactionServiceException){
-            message = exception.getMessage();
-            return errorModelAndView(500, message);
+            return errorModelAndView(500, exception.getMessage());
 
         } else {
-            return errorModelAndView(500, message);
+            return errorModelAndView(500, exception.getMessage());
         }
 
     }
