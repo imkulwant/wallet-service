@@ -57,7 +57,7 @@ class CreditResourceTest {
         Mockito.when(creditService.creditPlayer(creditRequest))
                 .thenReturn(new WalletResponse(123L, 5.0, 999888));
 
-        var request = MockMvcRequestBuilders.post("/credit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/credit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
@@ -87,7 +87,7 @@ class CreditResourceTest {
                     }
                 """;
 
-        var request = MockMvcRequestBuilders.post("/credit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/credit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
@@ -121,7 +121,7 @@ class CreditResourceTest {
         Mockito.when(creditService.creditPlayer(creditRequest))
                 .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
 
-        var request = MockMvcRequestBuilders.post("/credit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/credit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 

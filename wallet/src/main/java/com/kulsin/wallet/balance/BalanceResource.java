@@ -18,7 +18,7 @@ public class BalanceResource {
         this.balanceService = balanceService;
     }
 
-    @PostMapping(value = "/balance.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/wallet/balance.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public WalletResponse getBalance(
             @RequestBody @Valid WalletBaseRequest balanceRequest
     ) {
