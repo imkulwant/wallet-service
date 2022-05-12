@@ -1,10 +1,8 @@
 package com.kulsin.accounting.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 public class AccountService {
 
@@ -15,17 +13,30 @@ public class AccountService {
     }
 
     public double getBalance(long playerId) {
-        Account account = accountRepository.getById(playerId);
-        return account.getBalance();
+        try {
+            Account account = accountRepository.getById(playerId);
+            return account.getBalance();
+        } catch (Exception e) {
+            throw new AccountServiceException("Exception occurred while fetching player balance", e);
+        }
     }
 
     @Transactional
     public Account updatePlayerBalance(long playerId, double balance, String currency) {
+        try {
             return accountRepository.save(new Account(playerId, balance, currency));
+
+        } catch (Exception e) {
+            throw new AccountServiceException("Exception occurred while updating player balance", e);
+        }
     }
 
     public boolean accountExist(long playerId) {
-        return accountRepository.existsById(playerId);
+        try {
+            return accountRepository.existsById(playerId);
+        } catch (Exception e) {
+            throw new AccountServiceException("Exception occurred while checking player account", e);
+        }
     }
 
 }

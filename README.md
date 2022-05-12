@@ -15,13 +15,17 @@
 - Build the project `mvn clean install`
 - Start application `sudo java -jar application/target/application-0.0.1-SNAPSHOT.jar`
 
-Data will be stored at path `/h2/wallet` so for first time you might need to start application with sudo, so that folder gets created.
-
-For testing you may use postman collection present in application resources or swagger.
-
 # Important Links
 
 H2 DB Console: http://localhost:8080/h2-ui/
 
 Wallet Swagger: http://localhost:8080/swagger-ui/index.html
+
+
+# NOTE
+- Data will be stored at path `/h2/wallet` so for first time you might need to start application with sudo, so that folder gets created.
+
+- For testing you may use postman collection present in application resources or swagger.
+
+- First transaction should be a credit, so that player account gets created in db.
 
