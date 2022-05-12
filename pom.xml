@@ -16,13 +16,17 @@
 	</parent>
 
 	<properties>
-		<java.version>11</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+		<springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
 	</properties>
 
 	<modules>
 		<module>wallet</module>
 		<module>application</module>
-		<module>account-service</module>
+		<module>accounting</module>
 	</modules>
 
 	<dependencies>
