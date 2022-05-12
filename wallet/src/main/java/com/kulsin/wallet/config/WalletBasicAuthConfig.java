@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class HttpBasicAuthConfig extends WebSecurityConfigurerAdapter {
+public class WalletBasicAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -31,7 +31,8 @@ public class HttpBasicAuthConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-               .anyRequest().authenticated()
+                .antMatchers("/swagger-ui").permitAll()
+                .antMatchers("/v1/wallet").authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()
                 .and().csrf().disable();

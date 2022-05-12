@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:file:/home/panzer/db/h2
+    url: jdbc:h2:file:/h2/wallet
     driverClassName: org.h2.Driver
     username: sa
     password:

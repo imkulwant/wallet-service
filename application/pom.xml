@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>com.kulsin</groupId>
-            <artifactId>account-service</artifactId>
+            <artifactId>accounting</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
