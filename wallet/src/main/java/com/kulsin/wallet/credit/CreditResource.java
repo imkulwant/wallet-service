@@ -16,7 +16,7 @@ public class CreditResource {
         this.creditService = creditService;
     }
 
-    @PostMapping(value = "/credit.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/wallet/credit.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public WalletResponse credit(
             @RequestBody @Valid WalletRequest creditRequest
     ) {

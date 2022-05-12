@@ -58,7 +58,7 @@ class DebitResourceTest {
         Mockito.when(debitService.debitPlayer(debitRequest))
                 .thenReturn(new WalletResponse(123L, 5.0, 999888));
 
-        var request = MockMvcRequestBuilders.post("/debit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/debit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
@@ -92,7 +92,7 @@ class DebitResourceTest {
         Mockito.when(debitService.debitPlayer(debitRequest))
                 .thenThrow(new WalletException("Transaction declined! player has in-sufficient funds"));
 
-        var request = MockMvcRequestBuilders.post("/debit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/debit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
@@ -126,7 +126,7 @@ class DebitResourceTest {
         Mockito.when(debitService.debitPlayer(debitRequest))
                 .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
 
-        var request = MockMvcRequestBuilders.post("/debit.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/debit.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 

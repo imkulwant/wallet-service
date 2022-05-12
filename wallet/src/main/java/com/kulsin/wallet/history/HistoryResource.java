@@ -21,7 +21,7 @@ public class HistoryResource {
         this.transactionService = transactionService;
     }
 
-    @GetMapping(value = "/history.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/wallet/history.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionHistoryResponse playerHistory(@RequestParam long playerId) {
 
         if (!accountService.accountExist(playerId)) {

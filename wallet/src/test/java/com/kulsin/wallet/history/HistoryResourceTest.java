@@ -69,7 +69,7 @@ class HistoryResourceTest {
         Mockito.when(accountService.accountExist(123L)).thenReturn(true);
         Mockito.when(transactionService.getTransactions(123L)).thenReturn(response);
 
-        var request = MockMvcRequestBuilders.get("/history.json?playerId=123");
+        var request = MockMvcRequestBuilders.get("/v1/wallet/history.json?playerId=123");
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -92,7 +92,7 @@ class HistoryResourceTest {
 
         Mockito.when(accountService.accountExist(123L)).thenReturn(false);
 
-        var request = MockMvcRequestBuilders.get("/history.json?playerId=123");
+        var request = MockMvcRequestBuilders.get("/v1/wallet/history.json?playerId=123");
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

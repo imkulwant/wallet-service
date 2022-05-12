@@ -52,7 +52,7 @@ class BalanceResourceTest {
         Mockito.when(balanceService.playerBalance(123L))
                 .thenReturn(new WalletResponse(123L, 5.0, 345678087));
 
-        var request = MockMvcRequestBuilders.post("/balance.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/balance.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getBalanceRequestPayload);
 
@@ -79,7 +79,7 @@ class BalanceResourceTest {
                     }
                 """;
 
-        var request = MockMvcRequestBuilders.post("/balance.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/balance.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getBalanceRequestPayload);
 
@@ -109,7 +109,7 @@ class BalanceResourceTest {
         Mockito.when(balanceService.playerBalance(123L))
                 .thenThrow(new WalletException("Invalid player id! player account doesn't exists"));
 
-        var request = MockMvcRequestBuilders.post("/balance.json")
+        var request = MockMvcRequestBuilders.post("/v1/wallet/balance.json")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getBalanceRequestPayload);
 

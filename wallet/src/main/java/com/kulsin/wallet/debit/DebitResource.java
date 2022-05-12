@@ -16,7 +16,7 @@ public class DebitResource {
         this.debitService = debitService;
     }
 
-    @PostMapping(value = "/debit.json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/wallet/debit.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public WalletResponse debit(
             @RequestBody WalletRequest debitRequest
     ) {

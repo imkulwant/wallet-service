@@ -3,6 +3,8 @@ package com.kulsin.wallet.config;
 import com.kulsin.wallet.errorhandling.WalletExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.accept.ContentNegotiationManagerFactoryBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.View;
@@ -32,4 +34,10 @@ public class WalletConfig implements WebMvcConfigurer {
         contentNegotiatingViewResolver.setViewResolvers(new ArrayList<>());
         return contentNegotiatingViewResolver;
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }
