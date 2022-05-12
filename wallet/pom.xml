@@ -18,6 +18,11 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
+    </properties>
 
     <parent>
         <artifactId>wallet-service</artifactId>
@@ -46,7 +51,17 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.4.Final</version>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-swagger-ui.version}</version>
         </dependency>
     </dependencies>
 
