@@ -16,6 +16,9 @@ spring:
       enabled: true
       path: /h2-ui
 
+wallet:
+  username: test
+  password: test
 ---
 
 spring:
