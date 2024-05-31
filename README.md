@@ -10,7 +10,7 @@
 
 ### From IDE
 
-- Import the project in any IDE and create a run configuration with main class `com.kulsin.WalletServiceApplication`
+- Import the project in any IDE and create a run configuration with main class `com.kulsin.wallet.WalletServiceApplication`
 - To run in `test` profile add VM options `-Dspring.profiles.active=test`
 
 ### From Terminal
