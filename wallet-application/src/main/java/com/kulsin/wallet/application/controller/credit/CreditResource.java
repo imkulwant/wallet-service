@@ -1,7 +1,7 @@
-package com.kulsin.wallet.controller.credit;
+package com.kulsin.wallet.application.controller.credit;
 
-import com.kulsin.wallet.model.WalletRequest;
-import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.application.model.WalletRequest;
+import com.kulsin.wallet.application.model.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

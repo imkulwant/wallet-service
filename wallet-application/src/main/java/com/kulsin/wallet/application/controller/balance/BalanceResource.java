@@ -1,7 +1,7 @@
-package com.kulsin.wallet.controller.balance;
+package com.kulsin.wallet.application.controller.balance;
 
-import com.kulsin.wallet.model.WalletBaseRequest;
-import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.application.model.WalletBaseRequest;
+import com.kulsin.wallet.application.model.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

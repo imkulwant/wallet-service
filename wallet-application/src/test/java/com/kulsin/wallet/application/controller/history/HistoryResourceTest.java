@@ -1,4 +1,4 @@
-package com.kulsin.wallet.controller.history;
+package com.kulsin.wallet.application.controller.history;
 
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.transaction.Transaction;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static com.kulsin.wallet.controller.balance.ResourceTestCommon.makeMockMvc;
+import static com.kulsin.wallet.application.controller.balance.ResourceTestCommon.makeMockMvc;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -1,8 +1,8 @@
-package com.kulsin.wallet.controller.balance;
+package com.kulsin.wallet.application.controller.balance;
 
 import com.kulsin.wallet.core.account.AccountService;
-import com.kulsin.wallet.model.WalletResponse;
-import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.application.model.WalletResponse;
+import com.kulsin.wallet.application.errorhandling.WalletException;
 import org.springframework.stereotype.Service;
 
 @Service

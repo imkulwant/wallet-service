@@ -1,9 +1,9 @@
-package com.kulsin.wallet.controller.history;
+package com.kulsin.wallet.application.controller.history;
 
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.transaction.TransactionService;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.TransactionHistoryResponse;
+import com.kulsin.wallet.application.errorhandling.WalletException;
+import com.kulsin.wallet.application.model.TransactionHistoryResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

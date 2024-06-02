@@ -1,8 +1,8 @@
-package com.kulsin.wallet.controller.balance;
+package com.kulsin.wallet.application.controller.balance;
 
 import com.kulsin.wallet.core.account.AccountServiceException;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.application.errorhandling.WalletException;
+import com.kulsin.wallet.application.model.WalletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.kulsin.wallet.controller.balance.ResourceTestCommon.makeMockMvc;
+import static com.kulsin.wallet.application.controller.balance.ResourceTestCommon.makeMockMvc;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

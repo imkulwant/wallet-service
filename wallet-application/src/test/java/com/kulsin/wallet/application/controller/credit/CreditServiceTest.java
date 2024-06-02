@@ -1,11 +1,11 @@
-package com.kulsin.wallet.controller.credit;
+package com.kulsin.wallet.application.controller.credit;
 
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.transaction.Transaction;
 import com.kulsin.wallet.core.transaction.TransactionService;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.WalletRequest;
-import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.application.errorhandling.WalletException;
+import com.kulsin.wallet.application.model.WalletRequest;
+import com.kulsin.wallet.application.model.WalletResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

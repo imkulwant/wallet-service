@@ -1,4 +1,4 @@
-package com.kulsin.wallet.model;
+package com.kulsin.wallet.application.model;
 
 import lombok.Data;
 

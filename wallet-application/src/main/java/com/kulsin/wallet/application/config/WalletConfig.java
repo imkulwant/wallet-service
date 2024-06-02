@@ -1,6 +1,6 @@
-package com.kulsin.wallet.config;
+package com.kulsin.wallet.application.config;
 
-import com.kulsin.wallet.errorhandling.WalletExceptionHandler;
+import com.kulsin.wallet.application.errorhandling.WalletExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
