@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.kulsin.accounting", "com.kulsin.wallet"})
+@ComponentScan({"com.kulsin.wallet"})
 public class WalletServiceApplication {
 
 	public static void main(String[] args) {

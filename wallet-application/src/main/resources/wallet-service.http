@@ -1,0 +1,46 @@
+# wallet-service
+
+###
+# @name balance.json
+POST http://localhost:8080/v1/wallet/balance.json
+Authorization: Basic test test
+Content-Type: application/json
+
+{
+  "playerId": 123
+}
+
+###
+# @name history.json
+GET http://localhost:8080/v1/wallet/history.json?
+    playerId=123
+Authorization: Basic test test
+
+###
+# @name credit.json
+POST http://localhost:8080/v1/wallet/credit.json
+Authorization: Basic test test
+Content-Type: application/json
+
+{
+  "playerId": 123,
+  "amount": 5,
+  "currency": "EUR",
+  "transactionId": 989898
+}
+
+###
+# @name debit.json
+POST http://localhost:8080/v1/wallet/debit.json
+Authorization: Basic test test
+Content-Type: application/json
+
+{
+  "playerId": 123,
+  "amount": 0.85,
+  "transactionId": 65646456
+}
+
+###
+# @name swagger
+GET http://localhost:8080/swagger-ui/index.html

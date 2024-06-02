@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.kulsin</groupId>
     <artifactId>wallet-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.kulsin</groupId>
     <name>Wallet Service</name>
     <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <java.version>17</java.version>
@@ -26,6 +26,8 @@
 
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+
+        <spring-security-config.version>6.3.0</spring-security-config.version>
     </properties>
 
     <modules>
