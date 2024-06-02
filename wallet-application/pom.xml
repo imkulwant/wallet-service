@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.kulsin</groupId>
-            <artifactId>accounting</artifactId>
+            <artifactId>wallet-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

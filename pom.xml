@@ -30,7 +30,7 @@
 
     <modules>
         <module>wallet-application</module>
-        <module>accounting</module>
+        <module>wallet-core</module>
     </modules>
 
     <dependencies>
