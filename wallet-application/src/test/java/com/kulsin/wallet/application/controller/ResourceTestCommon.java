@@ -1,4 +1,4 @@
-package com.kulsin.wallet.application.controller.balance;
+package com.kulsin.wallet.application.controller;
 
 import com.kulsin.wallet.application.errorhandling.WalletExceptionHandler;
 import org.springframework.http.MediaType;

@@ -10,6 +10,9 @@ Content-Type: application/json
   "playerId": 123
 }
 
+curl -u test:test -H "Content-Type: application/json" -d '{"playerId":123}' -X http://localhost:8080/api/wallet/balance -v
+
+
 ###
 # @name history.json
 GET http://localhost:8080/v1/wallet/history.json?

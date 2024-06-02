@@ -32,3 +32,9 @@ Wallet Swagger: http://localhost:8080/swagger-ui/index.html
 
 - First transaction should be a credit, so that player account gets created in db.
 
+
+# Requests
+
+```bash
+curl -u test:test -H "Content-Type: application/json" -d '{"playerId":123}' -X POST http://localhost:8080/api/wallet/balance -v
+```

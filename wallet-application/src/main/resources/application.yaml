@@ -25,6 +25,9 @@ wallet:
   password: test
 ---
 
+wallet:
+  username: test
+  password: test
 spring:
   config:
     activate:
