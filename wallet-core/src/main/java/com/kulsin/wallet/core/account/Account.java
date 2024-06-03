@@ -13,17 +13,17 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts")
+@Table(name = "ACCOUNT")
 public class Account {
 
     @Id
-    @Column(name = "playerId")
+    @Column(name = "PLAYER_ID", nullable = false, unique = true)
     private long playerId;
 
-    @Column(name = "balance")
+    @Column(name = "BALANCE", nullable = false)
     private double balance;
 
-    @Column(name = "currency")
+    @Column(name = "CURRENCY", nullable = false)
     private String currency;
 
 }

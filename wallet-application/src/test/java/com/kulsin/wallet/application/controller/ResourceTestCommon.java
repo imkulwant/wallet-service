@@ -1,6 +1,6 @@
 package com.kulsin.wallet.application.controller;
 
-import com.kulsin.wallet.application.errorhandling.WalletExceptionHandler;
+import com.kulsin.wallet.errorhandling.WalletExceptionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.accept.ContentNegotiationManager;

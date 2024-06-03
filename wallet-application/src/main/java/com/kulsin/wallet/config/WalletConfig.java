@@ -1,6 +1,6 @@
-package com.kulsin.wallet.application.config;
+package com.kulsin.wallet.config;
 
-import com.kulsin.wallet.application.errorhandling.WalletExceptionHandler;
+import com.kulsin.wallet.errorhandling.WalletExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,8 +16,8 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-@EnableWebMvc
+//@Configuration
+//@EnableWebMvc
 public class WalletConfig implements WebMvcConfigurer {
 
     @Override
@@ -35,11 +35,6 @@ public class WalletConfig implements WebMvcConfigurer {
         contentNegotiatingViewResolver.setDefaultViews(defaultViews);
         contentNegotiatingViewResolver.setViewResolvers(new ArrayList<>());
         return contentNegotiatingViewResolver;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 }

@@ -1,9 +1,10 @@
 package com.kulsin.wallet.application.controller;
 
-import com.kulsin.wallet.application.errorhandling.WalletException;
-import com.kulsin.wallet.application.model.WalletRequest;
-import com.kulsin.wallet.application.model.WalletResponse;
-import com.kulsin.wallet.application.service.WalletService;
+import com.kulsin.wallet.controller.WalletResource;
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.service.WalletService;
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.transaction.TransactionService;
 import com.kulsin.wallet.core.transaction.TransactionServiceException;

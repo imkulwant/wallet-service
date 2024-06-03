@@ -27,7 +27,11 @@
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
 
-        <spring-security-config.version>6.3.0</spring-security-config.version>
+        <spring-security-config.version>6.1.5</spring-security-config.version>
+
+        <spring-security-web.version>6.1.5</spring-security-web.version>
+
+
     </properties>
 
     <modules>

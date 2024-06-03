@@ -1,10 +1,14 @@
-package com.kulsin.wallet.application.service;
+package com.kulsin.wallet.service;
 
-import com.kulsin.wallet.application.errorhandling.WalletException;
-import com.kulsin.wallet.application.model.TransactionHistoryResponse;
-import com.kulsin.wallet.application.model.WalletRequest;
-import com.kulsin.wallet.application.model.WalletResponse;
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.AuthenticateResponse;
+import com.kulsin.wallet.model.TransactionHistoryResponse;
+import com.kulsin.wallet.model.WalletBaseRequest;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import com.kulsin.wallet.core.account.AccountService;
+import com.kulsin.wallet.core.session.PlayerSession;
+import com.kulsin.wallet.core.session.PlayerSessionService;
 import com.kulsin.wallet.core.transaction.Transaction;
 import com.kulsin.wallet.core.transaction.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +21,16 @@ import java.time.Instant;
 public class WalletService {
 
     private final AccountService accountService;
+    private final PlayerSessionService sessionService;
     private final TransactionService transactionService;
+
+    public AuthenticateResponse authenticate(WalletBaseRequest request) {
+        PlayerSession playerSession = sessionService.createSession(request.getPlayerId());
+        return AuthenticateResponse.builder()
+                .playerId(request.getPlayerId())
+                .sessionToken(playerSession.getSessionToken())
+                .build();
+    }
 
     public WalletResponse playerBalance(Long playerId) {
 

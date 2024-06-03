@@ -1,4 +1,4 @@
-package com.kulsin.wallet.application.config;
+package com.kulsin.wallet.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

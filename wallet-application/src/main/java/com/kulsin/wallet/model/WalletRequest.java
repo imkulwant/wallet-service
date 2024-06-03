@@ -1,4 +1,4 @@
-package com.kulsin.wallet.application.model;
+package com.kulsin.wallet.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

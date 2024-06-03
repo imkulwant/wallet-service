@@ -1,4 +1,4 @@
-package com.kulsin.wallet.application.errorhandling;
+package com.kulsin.wallet.errorhandling;
 
 import com.kulsin.wallet.core.account.AccountServiceException;
 import com.kulsin.wallet.core.transaction.TransactionServiceException;

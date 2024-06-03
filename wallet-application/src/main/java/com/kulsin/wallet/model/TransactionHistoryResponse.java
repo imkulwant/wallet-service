@@ -1,4 +1,4 @@
-package com.kulsin.wallet.application.model;
+package com.kulsin.wallet.model;
 
 import com.kulsin.wallet.core.transaction.Transaction;
 import lombok.AllArgsConstructor;
