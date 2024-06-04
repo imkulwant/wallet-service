@@ -15,6 +15,8 @@ public class TransactionService {
     @Transactional
     public Transaction saveTransaction(Transaction transaction) {
 
+        validateTransactionIsUnique(transaction.getTransactionId());
+
         return transactionRepository.save(transaction);
 
     }
@@ -25,7 +27,7 @@ public class TransactionService {
 
     }
 
-    public void validateTransactionIsUnique(long transactionId) {
+    private void validateTransactionIsUnique(long transactionId) {
 
         if (transactionRepository.existsById(transactionId)) {
             throw new TransactionServiceException("Transaction is not unique");

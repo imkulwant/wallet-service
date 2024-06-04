@@ -1,25 +1,25 @@
 package com.kulsin.wallet.service;
 
 import com.kulsin.wallet.core.account.Account;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.AuthenticateResponse;
-import com.kulsin.wallet.model.TransactionHistoryResponse;
-import com.kulsin.wallet.model.WalletRequest;
-import com.kulsin.wallet.model.WalletResponse;
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.session.PlayerSession;
 import com.kulsin.wallet.core.session.PlayerSessionService;
 import com.kulsin.wallet.core.transaction.Transaction;
 import com.kulsin.wallet.core.transaction.TransactionService;
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.AuthenticateResponse;
+import com.kulsin.wallet.model.TransactionHistoryResponse;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.model.WalletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class WalletService {
 
+    private final ConversionService conversionService;
     private final AccountService accountService;
     private final PlayerSessionService sessionService;
     private final TransactionService transactionService;
@@ -38,7 +38,6 @@ public class WalletService {
 
     public WalletResponse playerBalance(WalletRequest request) {
 
-        accountService.validateIfPlayerAccountExist(request.getPlayerId());
         sessionService.validateIfSessionIsActive(request.getSessionToken());
 
         Account account = accountService.getPlayerAccount(request.getPlayerId());
@@ -48,9 +47,7 @@ public class WalletService {
 
     public WalletResponse creditPlayer(WalletRequest request) {
 
-        accountService.validateIfPlayerAccountExist(request.getPlayerId());
         sessionService.validateIfSessionIsActive(request.getSessionToken());
-        transactionService.validateTransactionIsUnique(request.getTransactionId());
 
         long playerId = request.getPlayerId();
         double amount = request.getAmount();
@@ -62,13 +59,10 @@ public class WalletService {
 
         Account account = accountService.updatePlayerAccount(new Account(playerId, updatedBalance, currency));
 
-        transactionService.saveTransaction(new Transaction(
-                transactionId,
-                playerId,
-                amount,
-                "CREDIT",
-                Instant.now().toString()
-        ));
+        Transaction transaction = conversionService.convert(request, Transaction.class);
+        transaction.setTransactionType("CREDIT");
+
+        transactionService.saveTransaction(transaction);
 
         return WalletResponse.builder().playerId(request.getPlayerId()).balance(account.getBalance())
                 .transactionId(transactionId)
@@ -77,9 +71,7 @@ public class WalletService {
 
     public WalletResponse debitPlayer(WalletRequest request) {
 
-        accountService.validateIfPlayerAccountExist(request.getPlayerId());
         sessionService.validateIfSessionIsActive(request.getSessionToken());
-        transactionService.validateTransactionIsUnique(request.getTransactionId());
 
         Long playerId = request.getPlayerId();
         double debitAmount = request.getAmount();
@@ -98,9 +90,10 @@ public class WalletService {
 
         accountService.updatePlayerAccount(new Account(playerId, updatedBalance, currency));
 
-        transactionService.saveTransaction(new Transaction(transactionId, playerId, debitAmount,
-                "DEBIT", Instant.now().toString()));
+        Transaction transaction = conversionService.convert(request, Transaction.class);
+        transaction.setTransactionType("DEBIT");
 
+        transactionService.saveTransaction(transaction);
 
         return WalletResponse.builder().playerId(request.getPlayerId()).balance(account.getBalance())
                 .transactionId(transactionId)

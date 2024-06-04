@@ -23,6 +23,8 @@ public class AccountService {
 
     public Account getPlayerAccount(long playerId) {
 
+        validateIfPlayerAccountExist(playerId);
+
         return accountRepository.getReferenceById(playerId);
 
     }
@@ -30,6 +32,7 @@ public class AccountService {
     @Transactional
     public Account updatePlayerAccount(Account account) {
 
+        validateIfPlayerAccountExist(account.getPlayerId());
         return accountRepository.save(account);
 
     }
