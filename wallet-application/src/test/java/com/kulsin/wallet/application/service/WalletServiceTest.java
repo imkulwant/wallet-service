@@ -33,7 +33,7 @@ class WalletServiceTest {
     void playerBalanceTest_Success() {
 
         when(accountService.accountExist(123L)).thenReturn(true);
-        when(accountService.getBalance(123L)).thenReturn(23.0);
+        when(accountService.getPlayerAccount(123L)).thenReturn(23.0);
 
         WalletResponse response = walletService.playerBalance(123L);
 
@@ -42,7 +42,7 @@ class WalletServiceTest {
         assertEquals("EUR", response.getCurrency());
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getBalance(123L);
+        verify(accountService, times(1)).getPlayerAccount(123L);
 
     }
 
@@ -62,12 +62,12 @@ class WalletServiceTest {
     void playerBalanceTest_UnExpectedError() {
 
         when(accountService.accountExist(123L)).thenReturn(true);
-        when(accountService.getBalance(123L)).thenThrow(new RuntimeException("Unexpected error"));
+        when(accountService.getPlayerAccount(123L)).thenThrow(new RuntimeException("Unexpected error"));
 
         Assertions.assertThrows(RuntimeException.class, () -> walletService.playerBalance(123L));
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getBalance(123L);
+        verify(accountService, times(1)).getPlayerAccount(123L);
 
     }
 
@@ -76,9 +76,9 @@ class WalletServiceTest {
 
         WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
 
-        when(transactionService.transactionExists(999888L)).thenReturn(false);
+        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
         when(accountService.accountExist(123L)).thenReturn(true);
-        when(accountService.getBalance(123L)).thenReturn(5.0);
+        when(accountService.getPlayerAccount(123L)).thenReturn(5.0);
 
 
         WalletResponse response = walletService.creditPlayer(creditRequest);
@@ -90,10 +90,10 @@ class WalletServiceTest {
 
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(2)).getBalance(123L);
-        verify(accountService, times(1)).updatePlayerBalance(123L, 10.0, "EUR");
+        verify(accountService, times(2)).getPlayerAccount(123L);
+        verify(accountService, times(1)).updatePlayerAccount(123L, 10.0, "EUR");
         verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
 
     }
 
@@ -102,9 +102,9 @@ class WalletServiceTest {
 
         WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
 
-        when(transactionService.transactionExists(999888L)).thenReturn(false);
+        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
         when(accountService.accountExist(123L)).thenReturn(false);
-        when(accountService.getBalance(123L)).thenReturn(5.0);
+        when(accountService.getPlayerAccount(123L)).thenReturn(5.0);
 
         WalletResponse response = walletService.creditPlayer(creditRequest);
 
@@ -114,10 +114,10 @@ class WalletServiceTest {
         assertEquals(999888L, response.getTransactionId());
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getBalance(123L);
-        verify(accountService, times(1)).updatePlayerBalance(123L, 5.0, "EUR");
+        verify(accountService, times(1)).getPlayerAccount(123L);
+        verify(accountService, times(1)).updatePlayerAccount(123L, 5.0, "EUR");
         verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
 
     }
 
@@ -126,11 +126,11 @@ class WalletServiceTest {
 
         WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
 
-        when(transactionService.transactionExists(999888L)).thenReturn(true);
+        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(true);
 
         Assertions.assertThrows(WalletException.class, () -> walletService.creditPlayer(creditRequest));
 
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
         verifyNoMoreInteractions(accountService, transactionService);
 
     }
@@ -139,8 +139,8 @@ class WalletServiceTest {
     void debitPlayerTest_Success() {
         WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
         Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(accountService.getBalance(123L)).thenReturn(10.0);
-        Mockito.when(transactionService.transactionExists(999888L)).thenReturn(false);
+        Mockito.when(accountService.getPlayerAccount(123L)).thenReturn(10.0);
+        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
 
         WalletResponse response = walletService.debitPlayer(debitRequest);
 
@@ -150,10 +150,10 @@ class WalletServiceTest {
         assertEquals(999888L, response.getTransactionId());
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(2)).getBalance(123L);
-        verify(accountService, times(1)).updatePlayerBalance(123L, 5.0, "EUR");
+        verify(accountService, times(2)).getPlayerAccount(123L);
+        verify(accountService, times(1)).updatePlayerAccount(123L, 5.0, "EUR");
         verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
 
     }
 
@@ -161,14 +161,14 @@ class WalletServiceTest {
     void debitPlayerTest_Failure_InSufficient_Funds() {
         WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
         Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(accountService.getBalance(123L)).thenReturn(1.0);
-        Mockito.when(transactionService.transactionExists(999888L)).thenReturn(false);
+        Mockito.when(accountService.getPlayerAccount(123L)).thenReturn(1.0);
+        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
 
         Assertions.assertThrows(WalletException.class, () -> walletService.debitPlayer(debitRequest));
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getBalance(123L);
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(accountService, times(1)).getPlayerAccount(123L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
         verifyNoMoreInteractions(accountService, transactionService);
 
     }
@@ -177,12 +177,12 @@ class WalletServiceTest {
     void debitPlayerTest_Failure_DuplicateTransaction() {
         WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
         Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(transactionService.transactionExists(999888L)).thenReturn(true);
+        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(true);
 
         Assertions.assertThrows(WalletException.class, () -> walletService.debitPlayer(debitRequest));
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(transactionService, times(1)).transactionExists(999888L);
+        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
         verifyNoMoreInteractions(accountService, transactionService);
 
     }

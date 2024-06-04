@@ -12,4 +12,6 @@ public interface PlayerSessionRepository extends JpaRepository<PlayerSession, Lo
 
     Optional<PlayerSession> findBySessionToken(String sessionToken);
 
+    boolean existsBySessionToken(String sessionToken);
+
 }

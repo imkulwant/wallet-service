@@ -1,16 +1,8 @@
 logging:
   level:
-    root: debug
+    root: info
 
 spring:
-  config:
-    activate:
-      on-profile: default
-  datasource:
-    url: jdbc:h2:file:/h2/wallet
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
   jpa:
     show-sql: true
     properties.hibernate.dialect: org.hibernate.dialect.H2Dialect
@@ -19,20 +11,7 @@ spring:
     console:
       enabled: true
       path: /h2-ui
-wallet:
-  username: test
-  password: test
----
-logging:
-  level:
-    root: debug
 
-wallet:
+com.kulsin.wallet:
   username: test
   password: test
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    url: jdbc:h2:mem:db

@@ -1,7 +1,9 @@
 package com.kulsin.wallet.service;
 
+import com.kulsin.wallet.core.account.Account;
 import com.kulsin.wallet.errorhandling.WalletException;
 import com.kulsin.wallet.model.AuthenticateResponse;
+import com.kulsin.wallet.model.CreditRequest;
 import com.kulsin.wallet.model.TransactionHistoryResponse;
 import com.kulsin.wallet.model.WalletBaseRequest;
 import com.kulsin.wallet.model.WalletRequest;
@@ -25,7 +27,11 @@ public class WalletService {
     private final TransactionService transactionService;
 
     public AuthenticateResponse authenticate(WalletBaseRequest request) {
-        PlayerSession playerSession = sessionService.createSession(request.getPlayerId());
+
+        Account account = accountService.findOrCreateAccount(request.getPlayerId());
+
+        PlayerSession playerSession = sessionService.createSession(account.getPlayerId());
+
         return AuthenticateResponse.builder()
                 .playerId(request.getPlayerId())
                 .sessionToken(playerSession.getSessionToken())
@@ -34,45 +40,36 @@ public class WalletService {
 
     public WalletResponse playerBalance(Long playerId) {
 
-        if (!accountService.accountExist(playerId)) {
-            throw new WalletException("Invalid player id! player account doesn't exists");
-        }
-
-        double balance = accountService.getBalance(playerId);
-        return new WalletResponse(playerId, balance);
+        accountService.validateIfPlayerAccountExist(playerId);
+        Account account = accountService.getPlayerAccount(playerId);
+        return new WalletResponse(playerId, account.getBalance());
 
     }
 
-    public WalletResponse creditPlayer(WalletRequest creditRequest) {
+    public WalletResponse creditPlayer(CreditRequest creditRequest) {
+
+        sessionService.validateIfSessionIsActive(creditRequest.getSessionToken());
 
         long playerId = creditRequest.getPlayerId();
         double amount = creditRequest.getAmount();
         String currency = creditRequest.getCurrency();
         long transactionId = creditRequest.getTransactionId();
 
-        if (transactionService.transactionExists(transactionId)) {
-            throw new WalletException(String.format("Transaction id %s is not unique!", transactionId));
-        }
+        transactionService.validateTransactionIsUnique(transactionId);
 
-        Transaction transaction = new Transaction(
+        double updatedBalance = accountService.getPlayerAccount(playerId).getBalance() + amount;
+
+        Account account = accountService.updatePlayerAccount(new Account(playerId, updatedBalance, currency));
+
+        transactionService.saveTransaction(new Transaction(
                 transactionId,
                 playerId,
                 amount,
                 "CREDIT",
                 Instant.now().toString()
-        );
+        ));
 
-        if (accountService.accountExist(playerId)) {
-            double updateBalance = accountService.getBalance(playerId) + amount;
-            accountService.updatePlayerBalance(playerId, updateBalance, currency);
-            transactionService.saveTransaction(transaction);
-        } else {
-            // for simplicity creating a new account if player doesn't exist
-            accountService.updatePlayerBalance(playerId, amount, currency);
-            transactionService.saveTransaction(transaction);
-        }
-
-        return new WalletResponse(playerId, accountService.getBalance(playerId), transactionId);
+        return new WalletResponse(playerId, account.getBalance(), transactionId);
     }
 
     public WalletResponse debitPlayer(WalletRequest debitRequest) {
@@ -84,9 +81,9 @@ public class WalletService {
 
         validateDebitRequest(playerId, debitAmount, transactionId);
 
-        double updatedBalance = accountService.getBalance(playerId) - debitAmount;
+        double updatedBalance = accountService.getPlayerAccount(playerId).getBalance() - debitAmount;
 
-        accountService.updatePlayerBalance(playerId, updatedBalance, currency);
+        accountService.updatePlayerAccount(new Account(playerId, updatedBalance, currency));
 
         transactionService.saveTransaction(new Transaction(transactionId, playerId, debitAmount,
                 "DEBIT", Instant.now().toString()));
@@ -97,15 +94,14 @@ public class WalletService {
 
     private void validateDebitRequest(Long playerId, double debitAmount, long transactionId) {
 
-        if (!accountService.accountExist(playerId)) {
-            throw new WalletException("Invalid player id! player account doesn't exists");
-        }
+        accountService.validateIfPlayerAccountExist(playerId);
 
-        if (transactionService.transactionExists(transactionId)) {
-            throw new WalletException(String.format("Transaction id %s is not unique!", transactionId));
-        }
+        transactionService.validateTransactionIsUnique(transactionId);
 
-        double balance = accountService.getBalance(playerId);
+        Account account = accountService.getPlayerAccount(playerId);
+
+        double balance = account.getBalance();
+
         if (!((balance - debitAmount) >= 0)) {
             throw new WalletException("Transaction declined! player has in-sufficient funds");
         }
@@ -114,11 +110,9 @@ public class WalletService {
 
     public TransactionHistoryResponse playerHistory(long playerId) {
 
-        if (!accountService.accountExist(playerId)) {
-            throw new WalletException("Invalid player id! player account doesn't exists");
-        }
+        accountService.validateIfPlayerAccountExist(playerId);
 
-        return new TransactionHistoryResponse(transactionService.getTransactions(playerId));
+        return new TransactionHistoryResponse(transactionService.getPlayerTransactions(playerId));
 
     }
 

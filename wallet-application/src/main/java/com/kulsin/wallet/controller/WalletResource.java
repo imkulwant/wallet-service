@@ -1,6 +1,7 @@
 package com.kulsin.wallet.controller;
 
 import com.kulsin.wallet.model.AuthenticateResponse;
+import com.kulsin.wallet.model.CreditRequest;
 import com.kulsin.wallet.service.WalletService;
 import com.kulsin.wallet.model.TransactionHistoryResponse;
 import com.kulsin.wallet.model.WalletBaseRequest;
@@ -35,7 +36,7 @@ public class WalletResource {
     }
 
     @PostMapping(value = "/credit", produces = APPLICATION_JSON_VALUE)
-    public WalletResponse credit(@RequestBody @Valid WalletRequest creditRequest) {
+    public WalletResponse credit(@RequestBody @Valid CreditRequest creditRequest) {
         return walletService.creditPlayer(creditRequest);
     }
 

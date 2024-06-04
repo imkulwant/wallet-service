@@ -1,5 +1,6 @@
 package com.kulsin.wallet.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,20 +23,22 @@ public class HttpBasicAuthConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .anyRequest()
                                 .authenticated())
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        UserDetails user = User.withUsername("test")
-                .password(encoder.encode("test"))
+    public UserDetailsService userDetailsService(PasswordEncoder encoder,
+                                                 @Value("${com.kulsin.wallet.username}") String username,
+                                                 @Value("${com.kulsin.wallet.password}") String password) {
+        UserDetails user = User.withUsername(username)
+                .password(encoder.encode(password))
                 .roles("USER")
                 .build();
 

@@ -23,22 +23,22 @@ class AccountServiceTest {
     private AccountService accountService;
 
     @Test
-    void getBalanceTest_Success() {
+    void getPlayerAccountTest_Success() {
         Account account = new Account(123L, 5.5, "EUR");
         when(accountRepository.getById(123L)).thenReturn(account);
 
-        double response = accountService.getBalance(123L);
+        double response = accountService.getPlayerAccount(123L);
 
         assertEquals(5.5, response);
         verify(accountRepository, times(1)).getById(123L);
     }
 
     @Test
-    void updatePlayerBalanceTest_Success() {
+    void updatePlayerAccountTest_Success() {
         Account account = new Account(123L, 5.5, "EUR");
         when(accountRepository.save(account)).thenReturn(account);
 
-        Account response = accountService.updatePlayerBalance(123L, 5.5, "EUR");
+        Account response = accountService.updatePlayerAccount(123L, 5.5, "EUR");
 
         assertEquals(account, response);
         verify(accountRepository, times(1)).save(account);
@@ -53,20 +53,20 @@ class AccountServiceTest {
     }
 
     @Test
-    void getBalanceTest_Failure_AccountServiceException() {
+    void getPlayerAccountTest_Failure_AccountServiceException() {
         when(accountRepository.getById(123L)).thenThrow(new RuntimeException());
 
-        assertThrows(AccountServiceException.class, () -> accountService.getBalance(123L));
+        assertThrows(AccountServiceException.class, () -> accountService.getPlayerAccount(123L));
 
         verify(accountRepository, times(1)).getById(123L);
     }
 
     @Test
-    void updatePlayerBalanceTest_Failure_AccountServiceException() {
+    void updatePlayerAccountTest_Failure_AccountServiceException() {
         Account account = new Account(123L, 5.5, "EUR");
         when(accountRepository.save(account)).thenThrow(new RuntimeException());
 
-        assertThrows(AccountServiceException.class, () -> accountService.updatePlayerBalance(123L, 5.5, "EUR"));
+        assertThrows(AccountServiceException.class, () -> accountService.updatePlayerAccount(123L, 5.5, "EUR"));
 
         verify(accountRepository, times(1)).save(account);
     }

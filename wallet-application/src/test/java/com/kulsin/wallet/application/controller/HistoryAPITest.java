@@ -70,7 +70,7 @@ class HistoryAPITest {
                 new Transaction(65646456L, 123L, 2.0, "CREDIT", "2022-05-11T20:00:17.386492513Z")
         );
         Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(transactionService.getTransactions(123L)).thenReturn(response);
+        Mockito.when(transactionService.getPlayerTransactions(123L)).thenReturn(response);
 
         var request = MockMvcRequestBuilders.get("/api/wallet/history?playerId=123");
 
@@ -79,7 +79,7 @@ class HistoryAPITest {
                 .andExpect(content().json(expectedResponse));
 
         verify(accountService, times(1)).accountExist(123L);
-        verify(transactionService, times(1)).getTransactions(123L);
+        verify(transactionService, times(1)).getPlayerTransactions(123L);
 
     }
 

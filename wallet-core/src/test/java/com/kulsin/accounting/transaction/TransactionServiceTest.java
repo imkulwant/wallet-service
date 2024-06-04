@@ -41,7 +41,7 @@ class TransactionServiceTest {
     }
 
     @Test
-    void getTransactionsTest_Success() {
+    void getPlayerTransactionsTest_Success() {
 
         Transaction t1 = new Transaction(9988L, 123L, 1.5,
                 "DEBIT", Instant.now().toString());
@@ -52,7 +52,7 @@ class TransactionServiceTest {
 
         when(transactionRepository.findAll()).thenReturn(List.of(t1, t2));
 
-        List<Transaction> response = transactionService.getTransactions(123L);
+        List<Transaction> response = transactionService.getPlayerTransactions(123L);
 
         assertTrue(response.contains(t1));
         verify(transactionRepository, Mockito.times(1)).findAll();
@@ -65,7 +65,7 @@ class TransactionServiceTest {
 
         when(transactionRepository.existsById(9988L)).thenReturn(true);
 
-        assertTrue(transactionService.transactionExists(9988L));
+        assertTrue(transactionService.validateTransactionIsUnique(9988L));
         verify(transactionRepository, Mockito.times(1)).existsById(9988L);
 
     }
@@ -84,11 +84,11 @@ class TransactionServiceTest {
     }
 
     @Test
-    void getTransactionsTest_Failure_TransactionServiceException() {
+    void getPlayerTransactionsTest_Failure_TransactionServiceException() {
 
         when(transactionRepository.findAll()).thenThrow(new RuntimeException());
 
-        assertThrows(TransactionServiceException.class, () -> transactionService.getTransactions(123L));
+        assertThrows(TransactionServiceException.class, () -> transactionService.getPlayerTransactions(123L));
 
         verify(transactionRepository, Mockito.times(1)).findAll();
 
@@ -99,7 +99,7 @@ class TransactionServiceTest {
 
         when(transactionRepository.existsById(9988L)).thenThrow(new RuntimeException());
 
-        assertThrows(TransactionServiceException.class, () -> transactionService.transactionExists(9988L));
+        assertThrows(TransactionServiceException.class, () -> transactionService.validateTransactionIsUnique(9988L));
 
         verify(transactionRepository, Mockito.times(1)).existsById(9988L);
 

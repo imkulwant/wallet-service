@@ -26,10 +26,14 @@ public class PlayerSessionService {
                 .orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
-    public boolean isSessionActive(String sessionToken) {
+    public void validateIfSessionIsActive(String sessionToken) {
+
         PlayerSession playerSession = playerSessionRepository.findBySessionToken(sessionToken)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
-        return playerSession.getExpiryTime().isAfter(LocalDateTime.now());
+
+        if (playerSession.getExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Session expired");
+        }
     }
 
 }

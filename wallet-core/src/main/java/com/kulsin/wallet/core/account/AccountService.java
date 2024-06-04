@@ -10,31 +10,36 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public double getBalance(long playerId) {
-        try {
-            Account account = accountRepository.getById(playerId);
-            return account.getBalance();
-        } catch (Exception e) {
-            throw new AccountServiceException("Exception occurred while fetching player balance", e);
+    @Transactional
+    public Account findOrCreateAccount(long playerId) {
+
+        if (accountRepository.existsById(playerId)) {
+            return getPlayerAccount(playerId);
+        } else {
+            return accountRepository.save(new Account(playerId, 0.0, "EUR"));
         }
+
+    }
+
+    public Account getPlayerAccount(long playerId) {
+
+        return accountRepository.getReferenceById(playerId);
+
     }
 
     @Transactional
-    public Account updatePlayerBalance(long playerId, double balance, String currency) {
-        try {
-            return accountRepository.save(new Account(playerId, balance, currency));
+    public Account updatePlayerAccount(Account account) {
 
-        } catch (Exception e) {
-            throw new AccountServiceException("Exception occurred while updating player balance", e);
-        }
+        return accountRepository.save(account);
+
     }
 
-    public boolean accountExist(long playerId) {
-        try {
-            return accountRepository.existsById(playerId);
-        } catch (Exception e) {
-            throw new AccountServiceException("Exception occurred while checking player account", e);
+    public void validateIfPlayerAccountExist(long playerId) {
+
+        if (!accountRepository.existsById(playerId)) {
+            throw new AccountServiceException("Player does not exist!");
         }
+
     }
 
 }
