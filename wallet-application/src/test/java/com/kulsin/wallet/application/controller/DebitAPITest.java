@@ -1,13 +1,11 @@
 package com.kulsin.wallet.application.controller;
 
 import com.kulsin.wallet.controller.WalletResource;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.WalletRequest;
-import com.kulsin.wallet.model.WalletResponse;
-import com.kulsin.wallet.service.WalletService;
 import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.transaction.TransactionService;
 import com.kulsin.wallet.core.transaction.TransactionServiceException;
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.kulsin.wallet.application.controller.ResourceTestCommon.makeMockMvc;
-import static org.mockito.Mockito.*;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockDebitRequest;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockWalletResponse;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,9 +63,8 @@ class DebitAPITest {
                         }
                 """;
 
-        WalletRequest debitRequest = new WalletRequest(13L, 5.0, "EUR", 999888L);
-        Mockito.when(walletService.debitPlayer(debitRequest))
-                .thenReturn(new WalletResponse(123L, 5.0, 999888));
+        Mockito.when(walletService.debitPlayer(mockDebitRequest()))
+                .thenReturn(mockWalletResponse());
 
         var request = MockMvcRequestBuilders.post("/api/wallet/debit")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +74,7 @@ class DebitAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).debitPlayer(debitRequest);
+        verify(walletService, times(1)).debitPlayer(mockDebitRequest());
 
     }
 
@@ -96,8 +96,7 @@ class DebitAPITest {
                     }
                 """;
 
-        WalletRequest debitRequest = new WalletRequest(13L, 5.0, "EUR", 999888L);
-        Mockito.when(walletService.debitPlayer(debitRequest))
+        Mockito.when(walletService.debitPlayer(mockDebitRequest()))
                 .thenThrow(new WalletException("Transaction declined! player has in-sufficient funds"));
 
         var request = MockMvcRequestBuilders.post("/api/wallet/debit")
@@ -108,7 +107,7 @@ class DebitAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).debitPlayer(debitRequest);
+        verify(walletService, times(1)).debitPlayer(mockDebitRequest());
 
     }
 
@@ -130,8 +129,7 @@ class DebitAPITest {
                     }
                 """;
 
-        WalletRequest debitRequest = new WalletRequest(13L, 5.0, "EUR", 999888L);
-        Mockito.when(walletService.debitPlayer(debitRequest))
+        Mockito.when(walletService.debitPlayer(mockDebitRequest()))
                 .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
 
         var request = MockMvcRequestBuilders.post("/api/wallet/debit")
@@ -142,7 +140,7 @@ class DebitAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).debitPlayer(debitRequest);
+        verify(walletService, times(1)).debitPlayer(mockDebitRequest());
 
     }
 
@@ -164,8 +162,7 @@ class DebitAPITest {
                     }
                 """;
 
-        WalletRequest debitRequest = new WalletRequest(13L, 5.0, "EUR", 999888L);
-        Mockito.when(walletService.debitPlayer(debitRequest))
+        Mockito.when(walletService.debitPlayer(mockDebitRequest()))
                 .thenThrow(new TransactionServiceException("Unexpected transaction service exception"));
 
         var request = MockMvcRequestBuilders.post("/api/wallet/debit")
@@ -176,7 +173,7 @@ class DebitAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).debitPlayer(debitRequest);
+        verify(walletService, times(1)).debitPlayer(mockDebitRequest());
 
     }
 

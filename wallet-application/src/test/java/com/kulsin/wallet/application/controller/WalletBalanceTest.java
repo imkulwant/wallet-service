@@ -1,54 +1,54 @@
 package com.kulsin.wallet.application.controller;
 
+import com.kulsin.wallet.config.HttpBasicAuthConfig;
 import com.kulsin.wallet.controller.WalletResource;
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.WalletResponse;
-import com.kulsin.wallet.service.WalletService;
-import com.kulsin.wallet.core.account.AccountService;
 import com.kulsin.wallet.core.account.AccountServiceException;
-import com.kulsin.wallet.core.transaction.TransactionService;
+import com.kulsin.wallet.errorhandling.WalletException;
+import com.kulsin.wallet.model.WalletRequest;
+import com.kulsin.wallet.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.kulsin.wallet.application.controller.ResourceTestCommon.makeMockMvc;
-import static org.mockito.Mockito.*;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.basicAuthHeaderValue;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockWalletResponse;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-class BalanceAPITest {
+@Import(HttpBasicAuthConfig.class)
+@WebMvcTest(value = WalletResource.class, excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class)
+class WalletBalanceTest {
 
-    @Mock
-    private AccountService accountService;
-    @Mock
-    private TransactionService transactionService;
-    @Mock
-    private WalletService walletService;
-    @InjectMocks
-    private WalletResource walletResource;
-
+    @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = makeMockMvc(walletResource);
-    }
+    @MockBean
+    private WalletService walletService;
 
     @Test
     void getBalanceTest() throws Exception {
         String getBalanceRequestPayload = """
-                        {
-                            "playerId": 123
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "amount": 5.00,
+                    "currency": "EUR",
+                    "sessionToken":"<valid-token-from-authenticate-response>",
+                    "transactionId": 989898
+                }""";
 
         String expectedBalanceResponse = """
                         {
@@ -58,18 +58,18 @@ class BalanceAPITest {
                         }
                 """;
 
-        Mockito.when(walletService.playerBalance(123L))
-                .thenReturn(new WalletResponse(123L, 5.0, 345678087));
+        when(walletService.playerBalance(any(WalletRequest.class))).thenReturn(mockWalletResponse());
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/balance")
+        var request = post("/api/wallet/balance")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, basicAuthHeaderValue())
                 .content(getBalanceRequestPayload);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedBalanceResponse));
 
-        verify(walletService, times(1)).playerBalance(123L);
+        verify(walletService, times(1)).playerBalance(any(WalletRequest.class));
 
     }
 
@@ -88,8 +88,9 @@ class BalanceAPITest {
                     }
                 """;
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/balance")
+        var request = post("/api/wallet/balance")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, basicAuthHeaderValue())
                 .content(getBalanceRequestPayload);
 
         mockMvc.perform(request)
@@ -115,10 +116,10 @@ class BalanceAPITest {
                     }
                 """;
 
-        Mockito.when(walletService.playerBalance(123L))
+        when(walletService.playerBalance(any(WalletRequest.class)))
                 .thenThrow(new WalletException("Invalid player id! player account doesn't exists"));
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/balance")
+        var request = post("/api/wallet/balance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getBalanceRequestPayload);
 
@@ -126,7 +127,7 @@ class BalanceAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedBalanceResponse));
 
-        verify(walletService, times(1)).playerBalance(123L);
+        verify(walletService, times(1)).playerBalance(any(WalletRequest.class));
 
     }
 
@@ -145,10 +146,10 @@ class BalanceAPITest {
                     }
                 """;
 
-        Mockito.when(walletService.playerBalance(123L))
+        Mockito.when(walletService.playerBalance(any(WalletRequest.class)))
                 .thenThrow(new AccountServiceException("Unexpected error occurred while fetching player balance"));
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/balance")
+        var request = post("/api/wallet/balance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getBalanceRequestPayload);
 
@@ -156,7 +157,7 @@ class BalanceAPITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedBalanceResponse));
 
-        verify(walletService, times(1)).playerBalance(123L);
+        verify(walletService, times(1)).playerBalance(any(WalletRequest.class));
 
     }
 
