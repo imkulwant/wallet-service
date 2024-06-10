@@ -11,6 +11,9 @@ spring:
     console:
       enabled: true
       path: /h2-ui
+  liquibase:
+    change-log: 'classpath:db/changelog-master.xml'
+    enabled: true
 
 com.kulsin.wallet:
   username: test

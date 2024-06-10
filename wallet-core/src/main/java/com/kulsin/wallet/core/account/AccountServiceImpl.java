@@ -44,19 +44,6 @@ public class AccountServiceImpl implements AccountService {
         return account.getBalance();
     }
 
-    // -------------------------------------------------------
-
-    @Transactional
-    public Account findOrCreateAccount(long playerId) {
-
-        if (accountRepository.existsById(playerId)) {
-            return getPlayerAccount(playerId);
-        } else {
-            return accountRepository.save(new Account(playerId, 0.0, "EUR"));
-        }
-
-    }
-
     private Account getPlayerAccount(long playerId) {
 
         return accountRepository.findById(playerId)

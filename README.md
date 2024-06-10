@@ -41,7 +41,8 @@ Wallet Swagger: http://localhost:8080/swagger-ui/index.html
 curl -u test:test \
      -H "Content-Type: application/json" \
      -d '{
-            "playerId":123
+            "playerId":123,
+            "sessionToken":"test-token"
           }' \
      -X POST \
      http://localhost:8080/api/wallet/authenticate \
@@ -56,8 +57,9 @@ curl -u test:test \
     -d '{
           "playerId": 123,
           "amount": 5.00,
+          "type": "credit",
           "currency": "EUR",
-          "sessionToken":"<valid-token-from-authenticate-response>",
+          "sessionToken":"test-token",
           "transactionId": 989898
         }' \
     -X POST \
@@ -73,7 +75,8 @@ curl -u test:test \
      -d '{
            "playerId": 123,
            "amount": 1.5,
-           "sessionToken":"<valid-token-from-authenticate-response>",
+           "type": "debit",
+           "sessionToken":"test-token",
            "transactionId": 65646456
          }' \
      -X POST \
@@ -87,8 +90,8 @@ curl -u test:test \
 curl -u test:test \
      -H "Content-Type: application/json" \
      -d '{
-          "playerId":123,
-          "sessionToken":"<valid-token-from-authenticate-response>",
+          "playerId": 123,
+          "sessionToken": "test-token"
           }' \
      -X POST \
      http://localhost:8080/api/wallet/balance \

@@ -1,7 +1,6 @@
 package com.kulsin.wallet.application.controller;
 
-import com.kulsin.wallet.model.request.CreditRequest;
-import com.kulsin.wallet.model.request.DebitRequest;
+import com.kulsin.wallet.model.request.WalletRequest;
 import com.kulsin.wallet.model.response.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,9 +31,10 @@ public class ResourceTestCommon {
         return "Basic " + Base64.getEncoder().encodeToString(("test" + ":" + "test").getBytes());
     }
 
-    public static CreditRequest mockCreditRequest() {
-        return CreditRequest.builder()
+    public static WalletRequest mockCreditRequest() {
+        return WalletRequest.builder()
                 .amount(5)
+                .type("credit")
                 .currency("EUR")
                 .playerId(123L)
                 .sessionToken(UUID.randomUUID().toString())
@@ -51,9 +51,10 @@ public class ResourceTestCommon {
                 .build();
     }
 
-    public static DebitRequest mockDebitRequest() {
-        return DebitRequest.builder()
+    public static WalletRequest mockDebitRequest() {
+        return WalletRequest.builder()
                 .amount(1.0)
+                .type("debit")
                 .currency("EUR")
                 .playerId(123L)
                 .sessionToken(UUID.randomUUID().toString())

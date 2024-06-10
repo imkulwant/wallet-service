@@ -1,12 +1,11 @@
 package com.kulsin.wallet.service;
 
 import com.kulsin.wallet.core.session.PlayerSessionService;
+import com.kulsin.wallet.core.transaction.TransactionService;
 import com.kulsin.wallet.core.transaction.entity.Transaction;
 import com.kulsin.wallet.core.transaction.model.TransactionRequest;
 import com.kulsin.wallet.core.transaction.model.TransactionResponse;
-import com.kulsin.wallet.core.transaction.TransactionService;
-import com.kulsin.wallet.model.request.CreditRequest;
-import com.kulsin.wallet.model.request.DebitRequest;
+import com.kulsin.wallet.model.request.BalanceRequest;
 import com.kulsin.wallet.model.request.WalletRequest;
 import com.kulsin.wallet.model.response.WalletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,14 @@ public class WalletService {
     private final PlayerSessionService sessionService;
     private final TransactionService transactionService;
 
-    public WalletResponse authenticate(WalletRequest request) {
+    public WalletResponse authenticate(BalanceRequest request) {
 
         sessionService.validateIfSessionIsActive(request.getSessionToken());
 
         return playerBalance(request);
     }
 
-    public WalletResponse playerBalance(WalletRequest request) {
+    public WalletResponse playerBalance(BalanceRequest request) {
 
         sessionService.validateIfSessionIsActive(request.getSessionToken());
 
@@ -43,7 +42,7 @@ public class WalletService {
 
     }
 
-    public WalletResponse creditPlayer(CreditRequest request) {
+    public WalletResponse creditPlayer(WalletRequest request) {
 
         sessionService.validateIfSessionIsActive(request.getSessionToken());
 
@@ -54,7 +53,7 @@ public class WalletService {
         return conversionService.convert(response, WalletResponse.class);
     }
 
-    public WalletResponse debitPlayer(DebitRequest request) {
+    public WalletResponse debitPlayer(WalletRequest request) {
 
         sessionService.validateIfSessionIsActive(request.getSessionToken());
 

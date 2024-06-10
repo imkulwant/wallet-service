@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -41,13 +40,16 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionServiceException("Transaction is not unique");
         }
 
-
         double balance = 0;
 
-        if (Objects.equals(request.getType(), "CREDIT")) {
+        if ("CREDIT".equalsIgnoreCase(request.getType())) {
+
             balance = accountService.creditAccount(request.getPlayerId(), request.getAmount());
-        } else if (Objects.equals(request.getType(), "DEBIT")) {
+
+        } else if ("DEBIT".equalsIgnoreCase(request.getType())) {
+
             balance = accountService.debitAccount(request.getPlayerId(), request.getAmount());
+
         }
 
         transactionRepository.save(

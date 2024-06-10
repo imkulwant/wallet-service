@@ -31,9 +31,6 @@ public class Transaction {
     @Column(name = "TRANSACTION_TYPE")
     private String transactionType;
 
-    @Column(name = "SESSION_TOKEN")
-    private String sessionToken;
-
     @Column(name = "TIMESTAMP")
     private String timestamp;
 

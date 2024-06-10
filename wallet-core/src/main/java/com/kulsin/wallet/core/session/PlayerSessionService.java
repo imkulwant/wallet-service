@@ -23,11 +23,6 @@ public class PlayerSessionService {
         return playerSessionRepository.save(playerSession);
     }
 
-    public PlayerSession getPlayerSession(Long playerId) {
-        return playerSessionRepository.findByPlayerId(playerId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
-    }
-
     public void validateIfSessionIsActive(String sessionToken) {
 
         PlayerSession playerSession = playerSessionRepository.findBySessionToken(sessionToken)

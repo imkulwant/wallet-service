@@ -9,10 +9,6 @@ import java.util.Optional;
 @Repository
 public interface PlayerSessionRepository extends JpaRepository<PlayerSession, Long> {
 
-    Optional<PlayerSession> findByPlayerId(Long playerId);
-
     Optional<PlayerSession> findBySessionToken(String sessionToken);
-
-    boolean existsBySessionToken(String sessionToken);
 
 }
