@@ -1,4 +1,4 @@
-package com.kulsin.wallet.model;
+package com.kulsin.wallet.model.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +8,11 @@ import lombok.Data;
 public class WalletResponse {
 
     private long playerId;
+
     private double balance;
-    private long transactionId;
+
     private String currency;
+
+    private Long transactionId;
 
 }

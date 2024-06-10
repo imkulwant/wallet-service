@@ -1,4 +1,4 @@
-package com.kulsin.wallet.core.account;
+package com.kulsin.wallet.core.account.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,21 +1,10 @@
 package com.kulsin.accounting.account;
 
-import com.kulsin.wallet.core.account.Account;
-import com.kulsin.wallet.core.account.AccountRepository;
-import com.kulsin.wallet.core.account.AccountService;
-import com.kulsin.wallet.core.account.AccountServiceException;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-class AccountServiceTest {
+class AccountServiceImplTest {
 /*
     @Mock
     private AccountRepository accountRepository;

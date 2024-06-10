@@ -1,8 +1,8 @@
 package com.kulsin.wallet.application.controller;
 
-import com.kulsin.wallet.errorhandling.WalletExceptionHandler;
-import com.kulsin.wallet.model.WalletRequest;
-import com.kulsin.wallet.model.WalletResponse;
+import com.kulsin.wallet.model.request.CreditRequest;
+import com.kulsin.wallet.model.request.DebitRequest;
+import com.kulsin.wallet.model.response.WalletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.accept.ContentNegotiationManager;
@@ -25,7 +25,6 @@ public class ResourceTestCommon {
         return standaloneSetup(resources)
                 .setContentNegotiationManager(contentNegotiationManager)
                 .setSingleView(mappingJackson2JsonView)
-                .setHandlerExceptionResolvers(new WalletExceptionHandler())
                 .build();
     }
 
@@ -33,8 +32,8 @@ public class ResourceTestCommon {
         return "Basic " + Base64.getEncoder().encodeToString(("test" + ":" + "test").getBytes());
     }
 
-    public static WalletRequest mockCreditRequest() {
-        return WalletRequest.builder()
+    public static CreditRequest mockCreditRequest() {
+        return CreditRequest.builder()
                 .amount(5)
                 .currency("EUR")
                 .playerId(123L)
@@ -52,8 +51,8 @@ public class ResourceTestCommon {
                 .build();
     }
 
-    public static WalletRequest mockDebitRequest() {
-        return WalletRequest.builder()
+    public static DebitRequest mockDebitRequest() {
+        return DebitRequest.builder()
                 .amount(1.0)
                 .currency("EUR")
                 .playerId(123L)

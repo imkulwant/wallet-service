@@ -1,21 +1,9 @@
 package com.kulsin.wallet.application.service;
 
-import com.kulsin.wallet.errorhandling.WalletException;
-import com.kulsin.wallet.model.WalletResponse;
-import com.kulsin.wallet.core.account.AccountService;
-import com.kulsin.wallet.core.transaction.Transaction;
-import com.kulsin.wallet.core.transaction.TransactionService;
-import com.kulsin.wallet.service.WalletService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class WalletServiceTest {

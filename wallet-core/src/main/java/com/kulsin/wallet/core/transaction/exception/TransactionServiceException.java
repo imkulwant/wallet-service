@@ -1,4 +1,4 @@
-package com.kulsin.wallet.core.transaction;
+package com.kulsin.wallet.core.transaction.exception;
 
 public class TransactionServiceException extends RuntimeException {
 

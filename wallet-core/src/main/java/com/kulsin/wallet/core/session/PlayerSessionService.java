@@ -1,5 +1,7 @@
 package com.kulsin.wallet.core.session;
 
+import com.kulsin.wallet.core.session.entity.PlayerSession;
+import com.kulsin.wallet.core.session.repository.PlayerSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.kulsin.wallet.errorhandling;
+package com.kulsin.wallet.exception;
 
 public class WalletException extends RuntimeException {
 

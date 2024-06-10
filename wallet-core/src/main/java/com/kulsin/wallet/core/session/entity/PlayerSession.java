@@ -1,4 +1,4 @@
-package com.kulsin.wallet.core.session;
+package com.kulsin.wallet.core.session.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

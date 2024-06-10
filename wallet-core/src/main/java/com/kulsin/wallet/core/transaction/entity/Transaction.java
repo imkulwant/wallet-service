@@ -1,4 +1,4 @@
-package com.kulsin.wallet.core.transaction;
+package com.kulsin.wallet.core.transaction.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,23 +15,26 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "transactions")
+@Table(name = "TRANSACTION")
 public class Transaction {
 
     @Id
-    @Column(name = "transactionId")
+    @Column(name = "TRANSACTION_ID")
     private long transactionId;
 
-    @Column(name = "playerId")
+    @Column(name = "PLAYER_ID")
     private long playerId;
 
-    @Column(name = "amount")
+    @Column(name = "AMOUNT")
     private double amount;
 
-    @Column(name = "transactionType")
+    @Column(name = "TRANSACTION_TYPE")
     private String transactionType;
 
-    @Column(name = "timestamp")
+    @Column(name = "SESSION_TOKEN")
+    private String sessionToken;
+
+    @Column(name = "TIMESTAMP")
     private String timestamp;
 
 

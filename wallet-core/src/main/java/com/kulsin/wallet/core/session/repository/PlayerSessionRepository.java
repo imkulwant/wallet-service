@@ -1,5 +1,6 @@
-package com.kulsin.wallet.core.session;
+package com.kulsin.wallet.core.session.repository;
 
+import com.kulsin.wallet.core.session.entity.PlayerSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

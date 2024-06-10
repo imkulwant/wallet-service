@@ -1,38 +1,17 @@
 package com.kulsin.wallet.core.transaction;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.kulsin.wallet.core.transaction.entity.Transaction;
+import com.kulsin.wallet.core.transaction.model.TransactionRequest;
+import com.kulsin.wallet.core.transaction.model.TransactionResponse;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class TransactionService {
+public interface TransactionService {
 
-    private final TransactionRepository transactionRepository;
+    TransactionResponse balance(Long playerId);
 
-    @Transactional
-    public Transaction saveTransaction(Transaction transaction) {
+    TransactionResponse transact(TransactionRequest request);
 
-        validateTransactionIsUnique(transaction.getTransactionId());
-
-        return transactionRepository.save(transaction);
-
-    }
-
-    public List<Transaction> getPlayerTransactions(long playerId) {
-
-        return transactionRepository.findAllByPlayerId(playerId);
-
-    }
-
-    private void validateTransactionIsUnique(long transactionId) {
-
-        if (transactionRepository.existsById(transactionId)) {
-            throw new TransactionServiceException("Transaction is not unique");
-        }
-
-    }
+    List<Transaction> playerTransactions(Long playerId);
 
 }

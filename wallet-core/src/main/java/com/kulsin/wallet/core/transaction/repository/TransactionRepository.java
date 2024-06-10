@@ -1,5 +1,6 @@
-package com.kulsin.wallet.core.transaction;
+package com.kulsin.wallet.core.transaction.repository;
 
+import com.kulsin.wallet.core.transaction.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
