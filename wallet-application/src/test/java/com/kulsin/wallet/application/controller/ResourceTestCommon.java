@@ -33,12 +33,12 @@ public class ResourceTestCommon {
 
     public static WalletRequest mockCreditRequest() {
         return WalletRequest.builder()
-                .amount(5)
+                .amount(5.00)
                 .type("credit")
                 .currency("EUR")
                 .playerId(123L)
-                .sessionToken(UUID.randomUUID().toString())
-                .transactionId(88888L)
+                .sessionToken("test-token")
+                .transactionId(989898L)
                 .build();
     }
 
@@ -46,8 +46,8 @@ public class ResourceTestCommon {
         return WalletResponse.builder()
                 .currency("EUR")
                 .playerId(123L)
-                .balance(5.0)
-                .transactionId(77777L)
+                .balance(5.00)
+                .transactionId(989898L)
                 .build();
     }
 

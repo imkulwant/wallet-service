@@ -2,6 +2,7 @@ package com.kulsin.wallet.application.controller;
 
 import com.kulsin.wallet.controller.WalletResource;
 import com.kulsin.wallet.core.account.AccountServiceImpl;
+import com.kulsin.wallet.core.transaction.TransactionService;
 import com.kulsin.wallet.core.transaction.TransactionServiceImpl;
 import com.kulsin.wallet.core.transaction.exception.TransactionServiceException;
 import com.kulsin.wallet.exception.WalletException;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.kulsin.wallet.application.controller.ResourceTestCommon.makeMockMvc;
@@ -29,12 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class CreditAPITest {
-/*
 
     @Mock
-    private AccountServiceImpl accountServiceImpl;
-    @Mock
-    private TransactionServiceImpl transactionServiceImpl;
+    private TransactionService transactionService;
     @Mock
     private WalletService walletService;
     @InjectMocks
@@ -54,7 +53,9 @@ class CreditAPITest {
                             "playerId": 123,
                             "amount": 5,
                             "currency": "EUR",
-                            "transactionId": 999888
+                            "type": "credit",
+                            "sessionToken":"test-token",
+                            "transactionId": 989898
                         }
                 """;
 
@@ -62,7 +63,7 @@ class CreditAPITest {
                         {
                             "playerId": 123,
                             "balance": 5.0,
-                            "transactionId": 999888
+                            "transactionId": 989898
                         }
                 """;
 
@@ -87,7 +88,8 @@ class CreditAPITest {
                         {
                             "playerId": 123,
                             "amount": 5,
-                            "currency": "EUR"
+                            "currency": "EUR",
+                            "type": "credit"
                         }
                 """;
 
@@ -102,9 +104,13 @@ class CreditAPITest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
-        mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedResponse));
+        MvcResult mvcResult = mockMvc.perform(request)
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        String s = mvcResult.getResponse().getContentAsString();
+
+//                .andExpect(content().json(expectedResponse));
 
         verifyNoInteractions(walletService);
 
@@ -176,6 +182,5 @@ class CreditAPITest {
         verify(walletService, times(1)).creditPlayer(mockCreditRequest());
 
     }
-*/
 
 }

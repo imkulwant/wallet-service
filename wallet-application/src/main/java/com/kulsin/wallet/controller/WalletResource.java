@@ -6,7 +6,9 @@ import com.kulsin.wallet.model.request.WalletRequest;
 import com.kulsin.wallet.model.response.WalletResponse;
 import com.kulsin.wallet.service.WalletService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,28 +28,28 @@ public class WalletResource {
     private final WalletService walletService;
 
     @PostMapping(value = "/authenticate", produces = APPLICATION_JSON_VALUE)
-    public WalletResponse authenticate(@RequestBody @Valid BalanceRequest request) {
-        return walletService.authenticate(request);
+    public ResponseEntity<WalletResponse> authenticate(@RequestBody @Valid BalanceRequest request) {
+        return ResponseEntity.ok(walletService.authenticate(request));
     }
 
     @PostMapping(value = "/balance", produces = APPLICATION_JSON_VALUE)
-    public WalletResponse getBalance(@RequestBody @Valid BalanceRequest request) {
-        return walletService.playerBalance(request);
+    public ResponseEntity<WalletResponse> getBalance(@RequestBody @Valid BalanceRequest request) {
+        return ResponseEntity.ok(walletService.playerBalance(request));
     }
 
     @PostMapping(value = "/debit", produces = APPLICATION_JSON_VALUE)
-    public WalletResponse debit(@RequestBody WalletRequest request) {
-        return walletService.debitPlayer(request);
+    public ResponseEntity<WalletResponse> debit(@RequestBody @Valid WalletRequest request) {
+        return ResponseEntity.ok(walletService.debitPlayer(request));
     }
 
     @PostMapping(value = "/credit", produces = APPLICATION_JSON_VALUE)
-    public WalletResponse credit(@RequestBody @Valid WalletRequest request) {
-        return walletService.creditPlayer(request);
+    public ResponseEntity<WalletResponse> credit(@RequestBody @Valid WalletRequest request) {
+        return ResponseEntity.ok(walletService.creditPlayer(request));
     }
 
     @GetMapping(value = "/history", produces = APPLICATION_JSON_VALUE)
-    public List<Transaction> playerHistory(@RequestParam long playerId) {
-        return walletService.playerHistory(playerId);
+    public ResponseEntity<List<Transaction>> playerHistory(@RequestParam @NotNull Long playerId) {
+        return ResponseEntity.ok(walletService.playerHistory(playerId));
     }
 
 }

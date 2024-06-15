@@ -16,11 +16,11 @@ import java.util.List;
 //@EnableWebMvc
 public class WalletConfig implements WebMvcConfigurer {
 
-   /* @Override
+    /*@Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         resolvers.add(new WalletExceptionHandler());
-    }
-*/
+    }*/
+
     @Bean
     public ContentNegotiatingViewResolver contentNegotiatingViewResolver() {
         var contentNegotiatingViewResolver = new ContentNegotiatingViewResolver();

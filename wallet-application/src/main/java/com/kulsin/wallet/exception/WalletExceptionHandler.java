@@ -4,12 +4,15 @@ import com.kulsin.wallet.core.account.exception.AccountServiceException;
 import com.kulsin.wallet.core.transaction.exception.TransactionServiceException;
 import com.kulsin.wallet.model.response.WalletErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Objects;
@@ -22,9 +25,8 @@ import static org.springframework.http.ResponseEntity.internalServerError;
 @ControllerAdvice
 public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<WalletErrorResponse> defaultHandler(Exception exception) {
-
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         log.error("Unexpected exception occurred in wallet", exception);
 
 
