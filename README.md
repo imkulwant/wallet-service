@@ -59,7 +59,7 @@ curl -u test:test \
           "amount": 5.00,
           "type": "credit",
           "currency": "EUR",
-          "sessionToken":"test-token",
+          
           "transactionId": 989898
         }' \
     -X POST \

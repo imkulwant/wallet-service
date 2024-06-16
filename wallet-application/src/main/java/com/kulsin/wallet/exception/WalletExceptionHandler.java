@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -25,8 +26,9 @@ import static org.springframework.http.ResponseEntity.internalServerError;
 @ControllerAdvice
 public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception exception) {
+
         log.error("Unexpected exception occurred in wallet", exception);
 
 
@@ -45,18 +47,6 @@ public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return internalServerError().body(walletErrorResponse(INTERNAL_SERVER_ERROR, exception.getMessage()));
-
-    }
-
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        String message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
-
-
-        return handleExceptionInternal(
-                exception, walletErrorResponse(BAD_REQUEST, message), headers, BAD_REQUEST, request);
-
 
     }
 

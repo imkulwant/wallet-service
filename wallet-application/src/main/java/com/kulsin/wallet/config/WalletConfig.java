@@ -14,9 +14,8 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
+//@Configuration
 //@EnableWebMvc
-@Import(WalletExceptionHandler.class)
 public class WalletConfig implements WebMvcConfigurer {
 
     /*@Override
