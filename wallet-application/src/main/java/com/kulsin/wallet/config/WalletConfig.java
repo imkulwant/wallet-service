@@ -2,6 +2,8 @@ package com.kulsin.wallet.config;
 
 import com.kulsin.wallet.exception.WalletExceptionHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.accept.ContentNegotiationManagerFactoryBean;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.View;
@@ -12,8 +14,9 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Configuration
+@Configuration
 //@EnableWebMvc
+@Import(WalletExceptionHandler.class)
 public class WalletConfig implements WebMvcConfigurer {
 
     /*@Override
@@ -21,7 +24,7 @@ public class WalletConfig implements WebMvcConfigurer {
         resolvers.add(new WalletExceptionHandler());
     }*/
 
-    @Bean
+    //@Bean
     public ContentNegotiatingViewResolver contentNegotiatingViewResolver() {
         var contentNegotiatingViewResolver = new ContentNegotiatingViewResolver();
         var contentNegotiationManagerFactoryBean = new ContentNegotiationManagerFactoryBean();

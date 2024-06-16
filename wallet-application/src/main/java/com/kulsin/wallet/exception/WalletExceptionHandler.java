@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Objects;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.internalServerError;
@@ -33,11 +33,11 @@ public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
         if (exception instanceof MethodArgumentNotValidException) {
             String message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
 
-            return badRequest().body(walletErrorResponse(HttpStatus.BAD_REQUEST, message));
+            return badRequest().body(walletErrorResponse(BAD_REQUEST, message));
 
         } else if (exception instanceof WalletException) {
 
-            return badRequest().body(walletErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage()));
+            return badRequest().body(walletErrorResponse(BAD_REQUEST, exception.getMessage()));
 
         } else if (exception instanceof AccountServiceException || exception instanceof TransactionServiceException) {
             return badRequest().body(walletErrorResponse(INTERNAL_SERVER_ERROR, exception.getMessage()));
@@ -45,6 +45,18 @@ public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return internalServerError().body(walletErrorResponse(INTERNAL_SERVER_ERROR, exception.getMessage()));
+
+    }
+
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        String message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
+
+
+        return handleExceptionInternal(
+                exception, walletErrorResponse(BAD_REQUEST, message), headers, BAD_REQUEST, request);
+
 
     }
 
