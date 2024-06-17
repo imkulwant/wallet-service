@@ -1,34 +1,87 @@
 # Wallet-Service
 
-- Wallet service to manage a player's transactions.
+- The Wallet service provides a set of API to manage wallet-related operations for players. This includes
+  authentication, balance inquiries, debit and credit transactions, and retrieving transaction history.
+- Application can be executed in 2 profiles: `dev` & `test`.
+- Both profiles uses an in-memory H2 database.
+- In `test` profile data is persisted across restarts, but not in `dev`.
 
-- Application can be executed in 2 profiles i.e. `default` & `test`.
-- Both profiles uses in-memory h2 database.
-- In `default` profile data is persisted across restarts, but not in `test`.
+# Requests
 
-# Running service locally
+**Authenticate:**
 
-### From IDE
+```bash
+curl -u test:test \
+     -H "Content-Type: application/json" \
+     -d '{
+            "playerId":123,
+            "sessionToken":"test-token"
+          }' \
+     -X POST \
+     http://localhost:8080/api/wallet/authenticate \
+     -v
+```
 
-- Import the project in any IDE and create a run configuration with main class `com.kulsin.WalletServiceApplication`
-- To run in `test` profile add VM options `-Dspring.profiles.active=test`
+**Credit:**
 
-### From Terminal
-- Go to `wallet-service` root folder.
-- Build the project `mvn clean install`
-- Start application `sudo java -jar application/target/application-0.0.1-SNAPSHOT.jar`
+```bash
+curl -u test:test \
+    -H "Content-Type: application/json" \
+    -d '{
+          "playerId": 123,
+          "amount": 5.00,
+          "type": "credit",
+          "currency": "EUR",
+          "sessionToken":"test-token",
+          "transactionId": 989898
+        }' \
+    -X POST \
+    http://localhost:8080/api/wallet/credit \
+    -v
+```
 
-# Important Links
+**Debit:**
 
-H2 DB Console: http://localhost:8080/h2-ui/
+```bash
+curl -u test:test \
+     -H "Content-Type: application/json" \
+     -d '{
+           "playerId": 123,
+           "amount": 1.5,
+           "type": "debit",
+           "sessionToken":"test-token",
+           "transactionId": 65646456
+         }' \
+     -X POST \
+     http://localhost:8080/api/wallet/debit \
+     -v
+```
 
-Wallet Swagger: http://localhost:8080/swagger-ui/index.html
+**Get Balance:**
 
+```bash
+curl -u test:test \
+     -H "Content-Type: application/json" \
+     -d '{
+          "playerId": 123,
+          "sessionToken": "test-token"
+          }' \
+     -X POST \
+     http://localhost:8080/api/wallet/balance \
+     -v
+```
+
+**Get History:**
+
+```bash
+curl -u test:test \
+    -H "Content-Type: application/json" \
+    -X GET \
+    http://localhost:8080/api/wallet/history?playerId=123 \
+    -v
+```
 
 # NOTE
-- In default profile, data will be stored at path `/h2/wallet`. So for first time you might need to start application with sudo to create folder, if application isn't having permission.
 
-- For testing you may use postman collection present in application resources or swagger.
-
-- First transaction should be a credit, so that player account gets created in db.
-
+- In test profile, data will be stored at path `/h2/wallet`. So for first time you might need to start application
+  with sudo to create folder, if application isn't having permission.

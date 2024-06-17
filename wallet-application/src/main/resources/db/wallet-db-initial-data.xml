@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="kulsin">
+
+        <insert tableName="ACCOUNT">
+            <column name="PLAYER_ID" value="123"/>
+            <column name="BALANCE" value="25.00"/>
+            <column name="CURRENCY" value="EUR"/>
+
+        </insert>
+
+        <insert tableName="PLAYER_SESSION">
+            <column name="PLAYER_ID" value="123"/>
+            <column name="SESSION_TOKEN" value="test-token"/>
+            <column name="START_TIME" value="2024-01-01T00:00:00"/>
+            <column name="EXPIRY_TIME" value="2034-12-31T00:00:00"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
