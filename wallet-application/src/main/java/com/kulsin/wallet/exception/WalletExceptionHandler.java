@@ -31,18 +31,12 @@ public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error("Unexpected exception occurred in wallet", exception);
 
-
-        if (exception instanceof MethodArgumentNotValidException) {
-            String message = Objects.requireNonNull(((MethodArgumentNotValidException) exception).getFieldError()).getDefaultMessage();
-
-            return badRequest().body(walletErrorResponse(BAD_REQUEST, message));
-
-        } else if (exception instanceof WalletException) {
+        if (exception instanceof WalletException) {
 
             return badRequest().body(walletErrorResponse(BAD_REQUEST, exception.getMessage()));
 
         } else if (exception instanceof AccountServiceException || exception instanceof TransactionServiceException) {
-            return badRequest().body(walletErrorResponse(INTERNAL_SERVER_ERROR, exception.getMessage()));
+            return internalServerError().body(walletErrorResponse(INTERNAL_SERVER_ERROR, exception.getMessage()));
 
         }
 
@@ -50,10 +44,19 @@ public class WalletExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+        String message = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
+        return badRequest().body(walletErrorResponse(BAD_REQUEST, message));
+    }
+
     private WalletErrorResponse walletErrorResponse(HttpStatus status, String message) {
 
         return WalletErrorResponse.builder()
-                .statusCode(status)
+                .statusCode(String.valueOf(status.value()))
                 .message(message)
                 .build();
 

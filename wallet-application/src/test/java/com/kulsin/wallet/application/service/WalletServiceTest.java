@@ -1,192 +1,149 @@
 package com.kulsin.wallet.application.service;
 
+import com.kulsin.wallet.converter.TxnResponseToWalletResponse;
+import com.kulsin.wallet.converter.WalletRequestToTxnRequestConverter;
+import com.kulsin.wallet.core.session.PlayerSessionService;
+import com.kulsin.wallet.core.transaction.TransactionService;
+import com.kulsin.wallet.core.transaction.entity.Transaction;
+import com.kulsin.wallet.core.transaction.model.TransactionRequest;
+import com.kulsin.wallet.model.request.BalanceRequest;
+import com.kulsin.wallet.model.request.WalletRequest;
+import com.kulsin.wallet.model.response.WalletResponse;
+import com.kulsin.wallet.service.WalletService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.convert.support.GenericConversionService;
 
+import java.time.Instant;
+import java.util.List;
+
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.PLAYER_ID;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockCreditRequest;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockDebitRequest;
+import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockTransactionResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class WalletServiceTest {
-/*
+public class WalletServiceTest {
 
     @Mock
-    private AccountService accountService;
-    @InjectMocks
-    private WalletService walletService;
+    private PlayerSessionService sessionService;
 
     @Mock
     private TransactionService transactionService;
 
-    @Test
-    void playerBalanceTest_Success() {
+    private WalletService walletService;
 
-        doNothing().when(accountService).validateIfPlayerAccountExist(123L);
+    @BeforeEach
+    void beforeEach() {
+        GenericConversionService conversionService = new GenericConversionService();
+        conversionService.addConverter(new TxnResponseToWalletResponse());
+        conversionService.addConverter(new WalletRequestToTxnRequestConverter());
 
-        when(accountService.getPlayerAccount(123L)).thenReturn(23.0);
-
-        WalletResponse response = walletService.playerBalance(123L);
-
-        assertEquals(123L, response.getPlayerId());
-        assertEquals(23.0, response.getBalance());
-        assertEquals("EUR", response.getCurrency());
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getPlayerAccount(123L);
-
+        walletService = new WalletService(conversionService, sessionService, transactionService);
     }
 
     @Test
-    void playerBalanceTest_InvalidPlayer() {
+    public void testAuthenticate() {
+        // Given
+        BalanceRequest request = new BalanceRequest(PLAYER_ID, "sessionToken");
+        doNothing().when(sessionService).validateIfSessionIsActive(request.getSessionToken());
+        when(transactionService.balance(request.getPlayerId())).thenReturn(mockTransactionResponse());
 
-        when(accountService.accountExist(123L)).thenReturn(false);
+        // When
+        WalletResponse response = walletService.authenticate(request);
 
-        Assertions.assertThrows(WalletException.class, () -> walletService.playerBalance(123L));
-
-        verify(accountService, times(1)).accountExist(123L);
-        verifyNoMoreInteractions(accountService);
-
+        // Then
+        assertNotNull(response);
+        assertEquals(request.getPlayerId(), response.getPlayerId());
     }
 
     @Test
-    void playerBalanceTest_UnExpectedError() {
+    public void testPlayerBalance() {
+        // Given
+        BalanceRequest request = new BalanceRequest(PLAYER_ID, "sessionToken");
+        doNothing().when(sessionService).validateIfSessionIsActive(request.getSessionToken());
 
-        when(accountService.accountExist(123L)).thenReturn(true);
-        when(accountService.getPlayerAccount(123L)).thenThrow(new RuntimeException("Unexpected error"));
+        when(transactionService.balance(request.getPlayerId())).thenReturn(mockTransactionResponse());
 
-        Assertions.assertThrows(RuntimeException.class, () -> walletService.playerBalance(123L));
+        // When
+        WalletResponse response = walletService.playerBalance(request);
 
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getPlayerAccount(123L);
-
+        // Then
+        assertNotNull(response);
+        assertEquals(request.getPlayerId(), response.getPlayerId());
     }
 
     @Test
-    void creditPlayer_Success_ExistingPlayer() {
+    public void testCreditPlayer() {
+        // Given
+        WalletRequest request = mockCreditRequest();
+        doNothing().when(sessionService).validateIfSessionIsActive(request.getSessionToken());
+        when(transactionService.transact(any(TransactionRequest.class))).thenReturn(mockTransactionResponse());
 
-        WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
+        // When
+        WalletResponse response = walletService.creditPlayer(request);
 
-        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
-        when(accountService.accountExist(123L)).thenReturn(true);
-        when(accountService.getPlayerAccount(123L)).thenReturn(5.0);
-
-
-        WalletResponse response = walletService.creditPlayer(creditRequest);
-
-        assertEquals(123L, response.getPlayerId());
-        assertEquals(5.0, response.getBalance());
-        assertEquals("EUR", response.getCurrency());
-        assertEquals(999888L, response.getTransactionId());
-
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(2)).getPlayerAccount(123L);
-        verify(accountService, times(1)).updatePlayerAccount(123L, 10.0, "EUR");
-        verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
-
+        // Then
+        assertNotNull(response);
+        assertEquals(request.getPlayerId(), response.getPlayerId());
+        assertEquals(100.0, response.getBalance());
     }
 
     @Test
-    void creditPlayer_Success_NewPlayer() {
+    public void testDebitPlayer() {
+        // Given
+        WalletRequest request = mockDebitRequest();
+        doNothing().when(sessionService).validateIfSessionIsActive(request.getSessionToken());
+        when(transactionService.transact(any(TransactionRequest.class))).thenReturn(mockTransactionResponse());
 
-        WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
+        // When
+        WalletResponse response = walletService.debitPlayer(request);
 
-        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
-        when(accountService.accountExist(123L)).thenReturn(false);
-        when(accountService.getPlayerAccount(123L)).thenReturn(5.0);
-
-        WalletResponse response = walletService.creditPlayer(creditRequest);
-
-        assertEquals(123L, response.getPlayerId());
-        assertEquals(5.0, response.getBalance());
-        assertEquals("EUR", response.getCurrency());
-        assertEquals(999888L, response.getTransactionId());
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getPlayerAccount(123L);
-        verify(accountService, times(1)).updatePlayerAccount(123L, 5.0, "EUR");
-        verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
-
+        // Then
+        assertNotNull(response);
+        assertEquals(request.getPlayerId(), response.getPlayerId());
+        assertEquals(100.0, response.getBalance());
     }
 
     @Test
-    void creditPlayer_Failure_DuplicateTransaction() {
+    public void testPlayerHistory() {
+        // Given
+        List<Transaction> transactions = List.of(
 
-        WalletRequest creditRequest = new WalletRequest(123L, 5, "EUR", 999888L);
+                Transaction.builder()
+                        .transactionId(9898L)
+                        .playerId(PLAYER_ID)
+                        .amount(120.00)
+                        .timestamp(Instant.now().toString())
+                        .transactionType("credit")
+                        .build()
+                ,
+                Transaction.builder()
+                        .transactionId(9999)
+                        .playerId(PLAYER_ID)
+                        .amount(20.00)
+                        .timestamp(Instant.now().toString())
+                        .transactionType("debit")
+                        .build()
+        );
 
-        when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(true);
+        when(transactionService.playerTransactions(PLAYER_ID)).thenReturn(transactions);
 
-        Assertions.assertThrows(WalletException.class, () -> walletService.creditPlayer(creditRequest));
+        // When
+        List<Transaction> response = walletService.playerHistory(PLAYER_ID);
 
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
-        verifyNoMoreInteractions(accountService, transactionService);
-
-    }
-
-    @Test
-    void debitPlayerTest_Success() {
-        WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
-        Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(accountService.getPlayerAccount(123L)).thenReturn(10.0);
-        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
-
-        WalletResponse response = walletService.debitPlayer(debitRequest);
-
-        assertEquals(123L, response.getPlayerId());
-        assertEquals(5.0, response.getBalance());
-        assertEquals("EUR", response.getCurrency());
-        assertEquals(999888L, response.getTransactionId());
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(2)).getPlayerAccount(123L);
-        verify(accountService, times(1)).updatePlayerAccount(123L, 5.0, "EUR");
-        verify(transactionService, times(1)).saveTransaction(any(Transaction.class));
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
+        // Then
+        assertNotNull(response);
+        assertEquals(transactions, response);
 
     }
-
-    @Test
-    void debitPlayerTest_Failure_InSufficient_Funds() {
-        WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
-        Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(accountService.getPlayerAccount(123L)).thenReturn(1.0);
-        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(false);
-
-        Assertions.assertThrows(WalletException.class, () -> walletService.debitPlayer(debitRequest));
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(accountService, times(1)).getPlayerAccount(123L);
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
-        verifyNoMoreInteractions(accountService, transactionService);
-
-    }
-
-    @Test
-    void debitPlayerTest_Failure_DuplicateTransaction() {
-        WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
-        Mockito.when(accountService.accountExist(123L)).thenReturn(true);
-        Mockito.when(transactionService.validateTransactionIsUnique(999888L)).thenReturn(true);
-
-        Assertions.assertThrows(WalletException.class, () -> walletService.debitPlayer(debitRequest));
-
-        verify(accountService, times(1)).accountExist(123L);
-        verify(transactionService, times(1)).validateTransactionIsUnique(999888L);
-        verifyNoMoreInteractions(accountService, transactionService);
-
-    }
-
-    @Test
-    void debitPlayerTest_Failure_InvalidPlayer() {
-        WalletRequest debitRequest = new WalletRequest(123L, 5.0, "EUR", 999888L);
-        Mockito.when(accountService.accountExist(123L)).thenReturn(false);
-
-        Assertions.assertThrows(WalletException.class, () -> walletService.debitPlayer(debitRequest));
-
-        verify(accountService, times(1)).accountExist(123L);
-        verifyNoMoreInteractions(accountService, transactionService);
-
-    }
-*/
 
 }

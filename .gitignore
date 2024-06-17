@@ -32,3 +32,4 @@ target/
 *.iws
 *.iml
 *.ipr
+.vscode

@@ -1,5 +1,7 @@
 package com.kulsin.wallet.application.controller;
 
+import com.kulsin.wallet.core.transaction.model.TransactionResponse;
+import com.kulsin.wallet.exception.WalletExceptionHandler;
 import com.kulsin.wallet.model.request.WalletRequest;
 import com.kulsin.wallet.model.response.WalletResponse;
 import org.springframework.http.MediaType;
@@ -9,11 +11,12 @@ import org.springframework.web.accept.FixedContentNegotiationStrategy;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.Base64;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class ResourceTestCommon {
+
+    public static final Long PLAYER_ID = 123L;
 
     public static MockMvc makeMockMvc(Object... resources) {
 
@@ -23,6 +26,7 @@ public class ResourceTestCommon {
         mappingJackson2JsonView.setContentType(MediaType.APPLICATION_JSON_VALUE);
         return standaloneSetup(resources)
                 .setContentNegotiationManager(contentNegotiationManager)
+                .setControllerAdvice(WalletExceptionHandler.class)
                 .setSingleView(mappingJackson2JsonView)
                 .build();
     }
@@ -53,13 +57,21 @@ public class ResourceTestCommon {
 
     public static WalletRequest mockDebitRequest() {
         return WalletRequest.builder()
-                .amount(1.0)
+                .amount(5.0)
                 .type("debit")
                 .currency("EUR")
                 .playerId(123L)
-                .sessionToken(UUID.randomUUID().toString())
-                .transactionId(99999L)
+                .sessionToken("test-token")
+                .transactionId(989898L)
                 .build();
     }
 
+    public static TransactionResponse mockTransactionResponse() {
+        return TransactionResponse.builder()
+                .playerId(PLAYER_ID)
+                .balance(100.0)
+                .transactionId(989898L)
+                .build();
+
+    }
 }

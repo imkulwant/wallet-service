@@ -8,5 +8,4 @@
     <include file="db/wallet-db-schema.xml"/>
     <include file="db/wallet-db-initial-data.xml"/>
 
-
 </databaseChangeLog>

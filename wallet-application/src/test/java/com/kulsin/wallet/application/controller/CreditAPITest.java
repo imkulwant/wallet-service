@@ -1,11 +1,9 @@
 package com.kulsin.wallet.application.controller;
 
 import com.kulsin.wallet.controller.WalletResource;
-import com.kulsin.wallet.core.account.AccountServiceImpl;
-import com.kulsin.wallet.core.transaction.TransactionService;
-import com.kulsin.wallet.core.transaction.TransactionServiceImpl;
 import com.kulsin.wallet.core.transaction.exception.TransactionServiceException;
 import com.kulsin.wallet.exception.WalletException;
+import com.kulsin.wallet.model.request.WalletRequest;
 import com.kulsin.wallet.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +14,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.kulsin.wallet.application.controller.ResourceTestCommon.makeMockMvc;
 import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockCreditRequest;
 import static com.kulsin.wallet.application.controller.ResourceTestCommon.mockWalletResponse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -33,13 +31,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CreditAPITest {
 
     @Mock
-    private TransactionService transactionService;
-    @Mock
     private WalletService walletService;
+
     @InjectMocks
     private WalletResource walletResource;
 
     private MockMvc mockMvc;
+
+    private static final String WALLET_CREDIT_PATH = "/api/wallet/credit";
 
     @BeforeEach
     void setUp() {
@@ -49,28 +48,26 @@ class CreditAPITest {
     @Test
     void creditTest_Success() throws Exception {
         String requestPayload = """
-                        {
-                            "playerId": 123,
-                            "amount": 5,
-                            "currency": "EUR",
-                            "type": "credit",
-                            "sessionToken":"test-token",
-                            "transactionId": 989898
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "amount": 5,
+                    "currency": "EUR",
+                    "type": "credit",
+                    "sessionToken":"test-token",
+                    "transactionId": 989898
+                }""";
 
         String expectedResponse = """
-                        {
-                            "playerId": 123,
-                            "balance": 5.0,
-                            "transactionId": 989898
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "balance": 5.0,
+                    "transactionId": 989898
+                }""";
 
         when(walletService.creditPlayer(mockCreditRequest()))
                 .thenReturn(mockWalletResponse());
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/credit")
+        var request = MockMvcRequestBuilders.post(WALLET_CREDIT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
@@ -83,34 +80,29 @@ class CreditAPITest {
     }
 
     @Test
-    void creditTest_InvalidRequest_MissingTransactionId() throws Exception {
+    void creditTest_InvalidRequest_MissingSessionToken() throws Exception {
         String requestPayload = """
-                        {
-                            "playerId": 123,
-                            "amount": 5,
-                            "currency": "EUR",
-                            "type": "credit"
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "amount": 5,
+                    "currency": "EUR",
+                    "type": "credit",
+                    "transactionId": 999888
+                }""";
 
         String expectedResponse = """
-                    {
-                        "errorMessage": "Mandatory field transactionId is missing",
-                        "errorStatus": 400
-                    }
-                """;
+                {
+                    "statusCode": "400",
+                    "message": "Mandatory field sessionToken is missing"
+                }""";
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/credit")
+        var request = MockMvcRequestBuilders.post(WALLET_CREDIT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
-        MvcResult mvcResult = mockMvc.perform(request)
+        mockMvc.perform(request)
                 .andExpect(status().is4xxClientError())
-                .andReturn();
-
-        String s = mvcResult.getResponse().getContentAsString();
-
-//                .andExpect(content().json(expectedResponse));
+                .andExpect(content().json(expectedResponse));
 
         verifyNoInteractions(walletService);
 
@@ -119,67 +111,67 @@ class CreditAPITest {
     @Test
     void creditTest_DuplicateTransaction() throws Exception {
         String requestPayload = """
-                        {
-                            "playerId": 123,
-                            "amount": 5,
-                            "currency": "EUR",
-                            "transactionId": 999888
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "amount": 5,
+                    "currency": "EUR",
+                    "type": "credit",
+                    "sessionToken":"test-token",
+                    "transactionId": 999888
+                }""";
 
         String expectedResponse = """
-                    {
-                        "errorMessage": "Transaction id 999888 is not unique!",
-                        "errorStatus": 400
-                    }
-                """;
+                {
+                    "message": "Transaction id 999888 is not unique!",
+                    "statusCode": "400"
+                }""";
 
 
-        when(walletService.creditPlayer(mockCreditRequest()))
+        when(walletService.creditPlayer(any(WalletRequest.class)))
                 .thenThrow(new WalletException("Transaction id 999888 is not unique!"));
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/credit")
+        var request = MockMvcRequestBuilders.post(WALLET_CREDIT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
         mockMvc.perform(request)
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).creditPlayer(mockCreditRequest());
+        verify(walletService, times(1)).creditPlayer(any(WalletRequest.class));
 
     }
 
     @Test
     void creditTest_UnExpected_TransactionServiceException() throws Exception {
         String requestPayload = """
-                        {
-                            "playerId": 123,
-                            "amount": 5,
-                            "currency": "EUR",
-                            "transactionId": 999888
-                        }
-                """;
+                {
+                    "playerId": 123,
+                    "amount": 5,
+                    "currency": "EUR",
+                    "type": "credit",
+                    "sessionToken":"test-token",
+                    "transactionId": 999888
+                }""";
 
         String expectedResponse = """
-                    {
-                        "errorMessage": "Unexpected transaction service exception",
-                        "errorStatus": 500
-                    }
-                """;
+                {
+                    "message": "Unexpected transaction service exception",
+                    "statusCode": "500"
+                }""";
 
-        Mockito.when(walletService.creditPlayer(mockCreditRequest()))
+        Mockito.when(walletService.creditPlayer(any(WalletRequest.class)))
                 .thenThrow(new TransactionServiceException("Unexpected transaction service exception"));
 
-        var request = MockMvcRequestBuilders.post("/api/wallet/credit")
+        var request = MockMvcRequestBuilders.post(WALLET_CREDIT_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestPayload);
 
         mockMvc.perform(request)
-                .andExpect(status().isOk())
+                .andExpect(status().is5xxServerError())
                 .andExpect(content().json(expectedResponse));
 
-        verify(walletService, times(1)).creditPlayer(mockCreditRequest());
+        verify(walletService, times(1)).creditPlayer(any(WalletRequest.class));
 
     }
 
