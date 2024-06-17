@@ -21,17 +21,14 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
-        <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
-
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
 
         <spring-security-config.version>6.1.5</spring-security-config.version>
-
         <spring-security-web.version>6.1.5</spring-security-web.version>
 
-
+        <spring-context.version>6.1.6</spring-context.version>
+        <liquibase-core.version>4.28.0</liquibase-core.version>
     </properties>
 
     <modules>

@@ -1,37 +1,10 @@
 # Wallet-Service
 
-- Wallet service to manage a player's transactions.
-
-- Application can be executed in 2 profiles i.e. `dev` & `test`.
-- Both profiles uses in-memory h2 database.
+- The Wallet service provides a set of API to manage wallet-related operations for players. This includes
+  authentication, balance inquiries, debit and credit transactions, and retrieving transaction history.
+- Application can be executed in 2 profiles: `dev` & `test`.
+- Both profiles uses an in-memory H2 database.
 - In `test` profile data is persisted across restarts, but not in `dev`.
-
-# Running service locally
-
-### From IDE
-
-- Import the project in any IDE and create a run configuration with main
-  class `com.kulsin.wallet.WalletServiceApplication`
-- To run in `test` profile add VM options `-Dspring.profiles.active=dev`
-
-### From Terminal
-
-- Go to `wallet-service` root folder.
-- Build the project `mvn clean install`
-- Start application `sudo java -jar application/target/application-0.0.1-SNAPSHOT.jar`
-
-# Important Links
-
-H2 DB Console: http://localhost:8080/h2-ui/
-
-Wallet Swagger: http://localhost:8080/swagger-ui/index.html
-
-# NOTE
-
-- In test profile, data will be stored at path `/h2/wallet`. So for first time you might need to start application
-  with sudo to create folder, if application isn't having permission.
-
-- First transaction should be a credit, so that player account gets created in db.
 
 # Requests
 
@@ -107,3 +80,8 @@ curl -u test:test \
     http://localhost:8080/api/wallet/history?playerId=123 \
     -v
 ```
+
+# NOTE
+
+- In test profile, data will be stored at path `/h2/wallet`. So for first time you might need to start application
+  with sudo to create folder, if application isn't having permission.
